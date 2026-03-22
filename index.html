@@ -4,67 +4,243 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anatomy Atlas | الرئيسية</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root {
+            --bg-black: #050505;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --accent-blue: #00d4ff;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: var(--font-main);
+            line-height: 1.6;
+        }
+
+        /* ---  Header --- */
+        .header-wrapper {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            background-color: rgba(5, 5, 5, 0.6); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s ease;
+        }
+
+        .header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            align-items: center;
+        }
+
+        .right-nav { justify-content: flex-start; }
+        .left-nav { justify-content: flex-end; }
+
+        .navbar a, .dropbtn {
+            text-decoration: none;
+            color: var(--text-white);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover, .dropdown:hover .dropbtn {
+            color: var(--accent-blue);
+        }
+
+        .logo-img-link {
+            flex: 0 0 auto;
+            margin: 0 30px;
+        }
+
+        .logo-img {
+            width: 55px;
+            display: block;
+        }
+
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(15, 15, 15, 0.98);
+            min-width: 180px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.8);
+            z-index: 1001;
+            top: 100%;
+            right: 0;
+            border: 1px solid #222;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* LOG IN*/
+        .login-btn-header {
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px !important;
+            border-radius: 20px;
+        }
+        .login-btn-header:hover {
+            background: white;
+            color: black !important;
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), 
+                        url('BCKGND.png'); 
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-section h1 {
+            font-size: 5rem;
+            letter-spacing: 10px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            letter-spacing: 4px;
+        }
+
+
+        .content-area {
+            padding: 100px 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .grid-item {
+            height: 400px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.7;
+            transition: 0.5s;
+        }
+
+        .grid-item:hover img { transform: scale(1.1); opacity: 1; }
+
+        .footer {
+            padding: 60px;
+            text-align: center;
+            border-top: 1px solid #1a1a1a;
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .header { padding: 0 20px; }
+            .navbar a { font-size: 11px; }
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="header-wrapper">
-    <div class="header">
-        
-        <div class="navbar right-nav">
-            <a href="index.html">الرئيسية</a>
-
-            <div class="dropdown">
-                <a href="#" class="dropbtn">الأطلس الحيوي</a>
-                <div class="dropdown-content">
-                    <a href="skeletal.html">الهيكل العظمي</a>
-                    <a href="muscular.html">الجهاز العضلي</a>
-                    <a href="circulatory.html">الجهاز الدوري</a>
-                    <a href="digestive.html">الجهاز الهضمي</a>
-                    <a href="nervous.html">الجهاز العصبي</a>
+    <div class="header-wrapper">
+        <div class="header">
+            <div class="navbar right-nav">
+                <a href="index.html">الرئيسية</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">الأطلس الحيوي</a>
+                    <div class="dropdown-content">
+                        <a href="skeletal.html">الهيكل العظمي</a>
+                        <a href="muscular.html">الجهاز العضلي</a>
+                        <a href="circulatory.html">الجهاز الدوري</a>
+                        <a href="digestive.html">الجهاز الهضمي</a>
+                        <a href="nervous.html">الجهاز العصبي</a>
+                    </div>
                 </div>
+                <a href="lab.html">مختبر دراسي</a>
             </div>
 
-            <a href="lab.html">مختبر دراسي</a>
-        </div>
+            <a href="index.html" class="logo-img-link">
+                <img src="Logo.png" class="logo-img" alt="logo">
+            </a>
 
-        <a href="index.html" class="logo-img-link">
-            <img src="Logo.png" class="logo-img" alt="logo">
-        </a>
-
-        <div class="navbar left-nav">
-            <a href="about.html">من نحن</a>
-            <a href="contact.html">تواصل معنا</a>
-            
-            <a href="login.html" class="login-btn-header">تسجيل الدخول</a>
-        </div>
-
-    </div>
-</div>
-
-</div>
-
-    <div class="glow"></div>
-
-    <div class="container">
-        <div class="content-box">
-            <h1>مرحباً بك في Anatomy Atlas</h1>
-            
-            <p>استكشف أنظمة جسم الإنسان بطريقة تفاعلية وعصرية. تهدف هذه المنصة لمساعدة الطلاب على فهم علم التشريح بكل سهولة ووضوح.</p>
-            
-            <div class="main-image-wrapper">
-                <img src="profile1.jpg" alt="Human Anatomy System" class="hero-img">
-            </div>
-
-            <div style="margin-top: 30px;">
-                <a href="skeletal.html" class="main-btn" style="text-decoration: none; display: inline-block; width: auto; padding: 14px 40px;">ابدأ الاستكشاف الآن</a>
+            <div class="navbar left-nav">
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل معنا</a>
+                <a href="login.html" class="login-btn-header">تسجيل الدخول</a>
             </div>
         </div>
     </div>
 
-    <div class="footer">
-        <p>© 2026 Anatomy Atlas || Science Team</p>
+    <section class="hero-section">
+        <h1>ANATOMY</h1>
+        <p>WANDER OFTEN. WONDER ALWAYS.</p>
+    </section>
+
+    <div class="content-area">
+        <h2>استكشف العالم</h2>
+        <p>استمتع برحلة تعليمية فريدة في أعماق جسم الإنسان.</p>
+        
+        <div class="grid-layout">
+            <div class="grid-item"><img src="img1.jpg" alt="Skeletal"></div>
+            <div class="grid-item"><img src="img2.jpg" alt="Muscular"></div>
+            <div class="grid-item"><img src="img3.jpg" alt="Nervous"></div>
+        </div>
     </div>
+
+    <footer class="footer">
+        <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
+    </footer>
 
 </body>
 </html>
