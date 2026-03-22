@@ -346,3 +346,120 @@ tr:hover {
     font-size: 0.85rem;
     color: var(--sub-text);
 }
+
+
+
+.main-layout {
+    display: flex; 
+    margin-top: 75px; /* لترك مسافة للهيدر */
+    height: calc(100vh - 75px);
+    width: 100%;
+}
+
+
+.workspace {
+    flex: 1; 
+    background: radial-gradient(circle, #1b263b 0%, #05070a 100%);
+    position: relative;
+}
+
+.side-panel {
+    width: 380px; 
+    background-color: #ffffff; 
+    display: flex; 
+    flex-direction: column;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.tabs {
+    display: flex; 
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tab {
+    flex: 1; 
+    padding: 18px; 
+    text-align: center;
+    font-weight: 600; 
+    cursor: pointer; 
+    color: #64748b;
+    font-size: 0.8rem; 
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.tab.active {
+    background: #fff; 
+    color: #00d4ff;
+    border-bottom: 3px solid #00d4ff;
+}
+
+
+.info-box {
+    padding: 30px; 
+    flex-grow: 1; 
+    overflow-y: auto;
+    color: #1e293b; 
+    line-height: 1.6;
+    text-align: right;
+}
+
+.info-box h2 { 
+    font-size: 1.4rem; 
+    margin-bottom: 15px; 
+    color: #0f172a; 
+}
+
+.info-card {
+    background: #f0f9ff; 
+    border-radius: 12px;
+    padding: 20px; 
+    margin-top: 20px;
+    border-right: 4px solid #00d4ff;
+}
+
+
+.footer-btns { 
+    padding: 20px 30px; 
+    background: #fff; 
+    border-top: 1px solid #e2e8f0; 
+}
+
+.btn-blue { 
+    background: #0f172a; 
+    color: #fff; 
+    width: 100%; 
+    padding: 13px; 
+    border: none; 
+    border-radius: 10px; 
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.btn-green { 
+    background: #10b981; 
+    color: #fff; 
+    width: 100%; 
+    padding: 13px; 
+    border: none; 
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+.hotspot {
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%;
+    background: rgba(0, 212, 255, 0.6); 
+    border: 2px solid #fff;
+    box-shadow: 0 0 10px #00d4ff; 
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.hotspot:hover {
+    transform: scale(1.2);
+}
