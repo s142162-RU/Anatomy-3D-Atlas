@@ -167,7 +167,12 @@
             background: #111;
             position: relative;
             overflow: hidden;
+            border-radius: 20px; 
+            overflow: hidden;   
+            text-decoration: none;
+            color: white;
         }
+        
 
         .grid-item img {
             width: 100%; height: 100%; object-fit: cover; opacity: 0.7;
@@ -189,6 +194,60 @@
             .navbar a { font-size: 11px; }
             .grid-layout { grid-template-columns: 1fr; }
         }
+
+        .cta-section { padding: 80px 20px; text-align: center; background: #080808; }
+
+        .start-journey-btn {
+            display: inline-block;
+            padding: 15px 40px;
+    
+            background: white;
+        
+            color: black;
+        
+            text-decoration: none;
+            font-weight: bold;
+        
+            border-radius: 30px;
+        
+            transition: 0.3s;
+        
+            text-transform: uppercase;
+        
+            letter-spacing: 2px;
+    
+        }
+
+
+    
+        .start-journey-btn:hover {
+    
+            background: var(--accent-blue);
+    
+            color: white;
+    
+            box-shadow: 0 10px 20px rgba(0,212,255,0.3);
+    
+        }
+
+    
+        .play-circle {
+     
+            width: 70px; height: 70px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 40px auto; cursor: pointer;
+            transition: 0.4s;
+            background: rgba(255,255,255,0.1);
+    
+        }
+
+    
+        .play-circle:hover { transform: scale(1.1); background: #fff; color: #000; }
+    
+    
+    
     </style>
 </head>
 <body>
@@ -225,18 +284,40 @@
     <section class="hero-section">
         <h1>ANATOMY</h1>
         <p>WANDER OFTEN. WONDER ALWAYS.</p>
+    <div class="video-trigger">
+        <div class="play-circle">
+            <span class="play-icon">▶</span>
+        </div>
+    </div>
+
     </section>
 
     <div class="content-area">
         <h2>استكشف العالم</h2>
         <p>استمتع برحلة تعليمية فريدة في أعماق جسم الإنسان.</p>
+
+
         
         <div class="grid-layout">
-            <div class="grid-item"><img src="img1.jpg" alt="Skeletal"></div>
-            <div class="grid-item"><img src="img2.jpg" alt="Muscular"></div>
-            <div class="grid-item"><img src="img3.jpg" alt="Nervous"></div>
+            <div class="grid-item"><img src="Skeletal.png" alt="Skeletal"></div>
+            <div class="grid-item"><img src="Muscular.png" alt="Muscular"></div>
+            <div class="grid-item"><img src="Nervous.png" alt="Nervous"></div>
         </div>
+
+        <div class="grid-layout">
+            <div class="grid-item"><img src="digestive.png" alt="digestive"></div>
+            <div class="grid-item"><img src="circulatory.png" alt="circulatory"></div>
+        </div>
+
     </div>
+
+
+    <section class="cta-section">
+    <div class="cta-box">
+        <h2>هل أنت مستعد للتعلم؟</h2>
+        <a href="lab.html" class="start-journey-btn">ابدأ رحلتك معنا الآن</a>
+    </div>
+</section>
 
     <footer class="footer">
         <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
