@@ -1,0 +1,144 @@
+/* Color variables for consistent branding */
+:root {
+    --navy: #0b1c2c;
+    --turquoise: #148b8d;
+    --white: #ffffff;
+    --gray: #cbcbcb;
+}
+
+/* Global reset and font styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Page layout to center the card on the screen */
+body {
+    background-color: var(--navy);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main authentication container */
+.auth-card {
+    background: var(--white);
+    width: 900px;
+    height: 550px;
+    border-radius: 20px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Reversing the side order for the Sign-Up page layout */
+.auth-card.reverse {
+    flex-direction: row-reverse;
+}
+
+/* White section styling for form inputs */
+.form-side {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo { width: 60px; margin-bottom: 10px; }
+h1 { color: var(--navy); margin-bottom: 20px; }
+
+/* Google OAuth button styling */
+.google-btn {
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.google-btn img { width: 18px; }
+
+.separator { margin: 20px 0; font-size: 12px; color: #ffffff; }
+
+/* Vertical form structure */
+form { 
+    width: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+/* Input fields styling */
+input {
+    background: var(--gray);
+    border: none;
+    padding: 12px 15px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.forgot-pass { 
+    font-size: 12px; 
+    color: #555; 
+    text-decoration: none; 
+    text-align: right; 
+}
+
+/* Primary action button */
+.submit-btn {
+    background: var(--turquoise);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Right/Left side section containing the background image */
+.image-side {
+    flex: 1;
+    position: relative;
+    color: white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-bg {
+    /* Background with a color gradient overlay on the image */
+    background: linear-gradient(rgba(20, 139, 141, 0.8), rgba(11, 28, 44, 0.8)), 
+                url('your-image.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+/* Welcome text content on top of the image */
+.overlay-content { padding: 40px; }
+.overlay-content h2 { font-size: 28px; margin-bottom: 15px; }
+.overlay-content p { font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
+
+/* Ghost button for switching between login and registration */
+.switch-btn {
+    border: 2px solid white;
+    padding: 10px 30px;
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.switch-btn:hover {
+    background: white;
+    color: var(--turquoise);
+}
