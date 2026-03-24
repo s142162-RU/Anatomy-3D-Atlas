@@ -97,6 +97,11 @@ body {
     display: flex; flex-direction: column;
     box-shadow: -5px 0 15px rgba(0,0,0,0.1);
     z-index: 10;
+    width: 380px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+
 }
 
 
@@ -145,10 +150,18 @@ body {
     transition: 0.3s; font-size: 0.95rem;
 }
 
-.btn-blue { background: #0f172a; color: #fff; }
+.btn-blue { background: #0f172a; color: #fff;padding: 12px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;}
 .btn-blue:hover { background: #334155; }
 
-.btn-green { background: #10b981; color: #fff; }
+.btn-green { background: #10b981; color: #fff;    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold; }
 .btn-green:hover { background: #059669; }
 
 
@@ -160,10 +173,42 @@ body {
     transition: 0.3s;
 }
 
+
+
+
+
+
 .hotspot:hover { transform: scale(1.3); background: var(--accent-blue); }
 
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+
+/* ===== table ===== */
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.comparison-table th {
+    background: #0162fe;
+    color: white;
+    padding: 10px;
+    border: 1px solid #444;
+}
+
+.comparison-table td {
+    padding: 10px;
+    border: 1px solid #444;
+}
+
+.comparison-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
 
