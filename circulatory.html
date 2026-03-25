@@ -28,11 +28,11 @@
             <nav class="nav-links"><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a><a href="login.html" class="login-btn">تسجيل الدخول</a></nav>
         </div>
     </header>
-
     <main class="main-layout">
         <div class="workspace">
-            <model-viewer src="Muscular.png camera-controls auto-rotate style="width:100%; height:100%;">
-                <button class="hotspot" slot="hotspot-1" data-position="0m 1.2m 0m" onclick="updateDetail('القلب', 'عضلة لا إرادية تضخ الدم الغني بالأكسجين لجميع الخلايا.')"></button>
+            <model-viewer src="Circulatory.glb" camera-controls auto-rotate style="width:100%; height:100%;">
+                <button class="hotspot" slot="hotspot-1" data-position="0m 1.2m 0m" 
+                    onclick="updateDetail('القلب', 'عضلة لا إرادية تضخ الدم الغني بالأكسجين لجميع الخلايا.')"></button>
             </model-viewer>
         </div>
         <div class="side-panel">
@@ -44,35 +44,38 @@
             <div id="info-tab" class="info-box content-pane">
                 <h2 id="title">الجهاز الدوري</h2>
                 <p id="desc">الجهاز الدوري مسؤول عن نقل الأكسجين والمواد الغذائية إلى جميع خلايا الجسم، والتخلص من الفضلات. يتكون من القلب، الدم، والأوعية الدموية، ويعمل بشكل مستمر للحفاظ على توازن الجسم.</p>
-                <div class="info-card"> 
+                <div class="info-card">
                     <strong>معلومات عامة:</strong>
                     <p id="desc">ينبض القلب حوالي 100,000 مرة في اليوم ليضخ الدم للجسم بالكامل.</p>
-                
+                </div>
                 <div class="info-tab content-pane">
-                    <strong>مقارنة بين المكونات:</strong>
-                    <table class="comparison-table">
-                        <th>المكون</th>
-                            <th>الوظيفة</th>
-                        </tr>
+                <strong>مقارنة بين مكونات الجهاز الدوري:</strong>
+                <table class="comparison-table">
+                    <tr>
+                        <th>العضو</th>
+                        <th>الوظيفة</th>
+                    </tr>
 
-                        <tr>
-                            <td>القلب</td>
-                            <td>ضخ الدم لجميع أجزاء الجسم</td>
-                        </tr>
 
-                        <tr>
+                    <tr>
+                        <td>القلب</td>
+                        <td>ضخ الدم لجميع أجزاء الجسم</td>
+                    </tr>
+
+                    <tr>
                             <td>الدم</td>
                             <td>نقل الأكسجين والغذاء والتخلص من الفضلات</td>
-                        </tr>
+                    </tr>
 
-                        <tr>
-                            <td>الأوعية الدموية</td>
+                    <tr>
+                             <td>الأوعية الدموية</td>
                             <td>نقل الدم داخل الجسم</td>
-                        </tr>
+                    </tr>
                     </table>
                 </div>
+
             </div>
-    </div>
+  
             <div id="links-tab" class="info-box content-pane" style="display:none;">
                 <h2>فيديوهات تعليمية</h2>
                 <div class="info-card">
