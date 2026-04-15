@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الذاكرة • Memory Match</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Unified Game Styles -->
+    <link rel="stylesheet" href="game-style.css">
+    
+    <style>
+        .memory-card {
+            aspect-ratio: 1 / 1;
+            background: var(--game-bg-cell);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -4px 0 #2e4c6b, 0 6px 0 #0a111a, 0 4px 8px black;
+            border: 1px solid var(--game-border-medium);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 2.8rem;
+        }
+        
+        .memory-card:not(.matched):hover {
+            background: #1a2f44;
+            transform: scale(0.97);
+            box-shadow: inset 0 -2px 0 #2e4c6b, 0 4px 0 #0a111a;
+        }
+        
+        .memory-card.matched {
+            background: #1f4a2c !important;
+            box-shadow: inset 0 -4px 0 #2e8b57, 0 6px 0 #0a2a1a, var(--game-glow) !important;
+            border-color: var(--game-success) !important;
+            cursor: default;
+        }
+        
+        .memory-card.flipped {
+            background: #1a3a2a !important;
+            box-shadow: inset 0 -4px 0 #2e8b57, 0 6px 0 #0a2a1a !important;
+            border-color: var(--game-success) !important;
+        }
+        
+        @media (max-width: 500px) {
+            .memory-card {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Back button -->
+        <a href="funpage.html" class="btn btn-outline-warning mb-3">← العودة للقائمة</a>
+        
+        <h1 class="game-title">🧠 ذاكرة</h1>
+        <p class="game-subtitle">Memory Match • اقلب البطاقات واعثر على الأزواج</p>
+        
+        <!-- Stats -->
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <div class="stat-card text-center">
+                    <div class="stat-label">المحاولات</div>
+                    <div class="stat-value" id="movesCount">0</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="stat-card text-center">
+                    <div class="stat-label">الأزواج</div>
+                    <div class="stat-value" id="pairsCount">0 / 8</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game grid -->
+        <div class="game-board">
+            <div class="grid-4x4" id="memoryGrid"></div>
+        </div>
+        
+        <!-- Message -->
+        <div class="game-message" id="messageBox">🎯 اقلب بطاقتين متطابقتين</div>
+        
+        <!-- Controls -->
+        <div class="d-flex justify-content-center">
+            <button class="btn-game" id="newGameBtn">🔄 لعبة جديدة</button>
+        </div>
+        
+        <div class="game-footer">
+            اضغط على البطاقة لقلبها • البطاقات المتطابقة تبقى مكشوفة
+        </div>
+    </div>
+    
+    <script>
+        (function(){
+            "use strict";
+
+            const EMOJI_SET = ['🐶', '🐱', '🐭', '🐹', '🐸', '🐼', '🐨', '🦊'];
+            const PAIRS_COUNT = 8;
+            const TOTAL_CARDS = PAIRS_COUNT * 2;
+            
+            let cards = [];
+            let flippedIndices = [];
+            let matchedIndices = [];
+            let moves = 0;
+            let pairsFound = 0;
+            let gameLocked = false;
+            let timeoutId = null;
+            
+            const gridEl = document.getElementById('memoryGrid');
+            const movesEl = document.getElementById('movesCount');
+            const pairsEl = document.getElementById('pairsCount');
+            const messageEl = document.getElementById('messageBox');
+            
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+            
+            function createShuffledDeck() {
+                const selectedEmojis = EMOJI_SET.slice(0, PAIRS_COUNT);
+                let deck = [];
+                for (let emoji of selectedEmojis) {
+                    deck.push(emoji, emoji);
+                }
+                return shuffleArray(deck);
+            }
+            
+            function resetGame() {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+                
+                cards = createShuffledDeck();
+                flippedIndices = [];
+                matchedIndices = [];
+                moves = 0;
+                pairsFound = 0;
+                gameLocked = false;
+                
+                updateStats();
+                messageEl.textContent = '🎯 اقلب بطاقتين متطابقتين';
+                renderGrid();
+            }
+            
+            function updateStats() {
+                movesEl.textContent = moves;
+                pairsEl.textContent = `${pairsFound} / ${PAIRS_COUNT}`;
+            }
+            
+            function checkGameComplete() {
+                if (pairsFound === PAIRS_COUNT) {
+                    messageEl.textContent = `🎉 مبروك! أكملت اللعبة في ${moves} محاولة 🎉`;
+                }
+            }
+            
+            function evaluateMatch(index1, index2) {
+                if (cards[index1] === cards[index2]) {
+                    matchedIndices.push(index1, index2);
+                    pairsFound++;
+                    updateStats();
+                    flippedIndices = [];
+                    gameLocked = false;
+                    renderGrid();
+                    checkGameComplete();
+                } else {
+                    timeoutId = setTimeout(() => {
+                        flippedIndices = [];
+                        gameLocked = false;
+                        renderGrid();
+                        timeoutId = null;
+                        if (pairsFound < PAIRS_COUNT) {
+                            messageEl.textContent = '🔄 حاول مرة أخرى';
+                        }
+                    }, 800);
+                    renderGrid();
+                    messageEl.textContent = '❌ غير متطابقين';
+                }
+            }
+            
+            function handleCardClick(index) {
+                if (gameLocked) return;
+                if (matchedIndices.includes(index)) return;
+                if (flippedIndices.includes(index)) return;
+                if (flippedIndices.length >= 2) return;
+                
+                flippedIndices.push(index);
+                
+                if (flippedIndices.length === 2) {
+                    moves++;
+                    updateStats();
+                    gameLocked = true;
+                    evaluateMatch(flippedIndices[0], flippedIndices[1]);
+                } else {
+                    messageEl.textContent = '🔍 اختر البطاقة الثانية';
+                }
+                
+                renderGrid();
+            }
+            
+            function renderGrid() {
+                gridEl.innerHTML = '';
+                
+                for (let i = 0; i < TOTAL_CARDS; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'memory-card';
+                    
+                    const isMatched = matchedIndices.includes(i);
+                    const isFlipped = flippedIndices.includes(i) || isMatched;
+                    
+                    if (isMatched) card.classList.add('matched');
+                    if (isFlipped && !isMatched) card.classList.add('flipped');
+                    
+                    card.textContent = (isFlipped || isMatched) ? cards[i] : '❓';
+                    if (!isFlipped && !isMatched) card.style.fontSize = '2.2rem';
+                    
+                    card.addEventListener('click', () => handleCardClick(i));
+                    gridEl.appendChild(card);
+                }
+            }
+            
+            resetGame();
+            document.getElementById('newGameBtn').addEventListener('click', resetGame);
+        })();
+    </script>
+</body>
+</html>

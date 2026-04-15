@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إكس وأو • XO Game</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Unified Game Styles -->
+    <link rel="stylesheet" href="game-style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Back button -->
+        <a href="funpage.html" class="btn btn-outline-warning mb-3">← العودة للقائمة</a>
+        
+        <h1 class="game-title">✧ X O ✧</h1>
+        <p class="game-subtitle">لعبة إكس وأو الكلاسيكية</p>
+        
+        <!-- Turn indicator -->
+        <div class="timer-container mb-4">
+            <div class="d-flex align-items-center justify-content-center gap-3">
+                <span class="text-light">دور اللاعب</span>
+                <span class="game-cell d-inline-flex p-3" id="turnSymbol" style="width: 60px; height: 60px;">X</span>
+            </div>
+        </div>
+        
+        <!-- Game board -->
+        <div class="game-board">
+            <div class="grid-3x3" id="board"></div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="d-flex gap-3 justify-content-center mb-3">
+            <button class="btn-game" id="resetBtn">🔄 لعبة جديدة</button>
+            <button class="btn-game" id="clearScoreBtn">📊 تصفير النتيجة</button>
+        </div>
+        
+        <!-- Score -->
+        <div class="row g-3 mt-3">
+            <div class="col-4">
+                <div class="stat-card text-center">
+                    <div class="stat-label">✖️ إكس</div>
+                    <div class="stat-value" id="scoreX">0</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="stat-card text-center">
+                    <div class="stat-label">تعادل</div>
+                    <div class="stat-value" id="scoreDraw">0</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="stat-card text-center">
+                    <div class="stat-label">◯ أو</div>
+                    <div class="stat-value" id="scoreO">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-footer">
+            اضغط على المربع للعب • العب مع صديقك
+        </div>
+    </div>
+    
+    <script>
+        // Game logic (same as before, adapted for Bootstrap classes)
+        (function(){
+            "use strict";
+            
+            let board = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let winPattern = null;
+            let scoreX = 0, scoreO = 0, scoreDraw = 0;
+            
+            const boardEl = document.getElementById('board');
+            const turnSymbolEl = document.getElementById('turnSymbol');
+            const scoreXEl = document.getElementById('scoreX');
+            const scoreOEl = document.getElementById('scoreO');
+            const scoreDrawEl = document.getElementById('scoreDraw');
+            
+            const winCombos = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            
+            function createBoard() {
+                boardEl.innerHTML = '';
+                for (let i = 0; i < 9; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'game-cell clickable';
+                    cell.style.fontSize = '3.5rem';
+                    cell.style.fontWeight = '800';
+                    cell.dataset.index = i;
+                    cell.addEventListener('click', handleClick);
+                    boardEl.appendChild(cell);
+                }
+            }
+            
+            function updateBoard() {
+                const cells = boardEl.children;
+                for (let i = 0; i < 9; i++) {
+                    const cell = cells[i];
+                    cell.textContent = board[i];
+                    cell.classList.remove('x-color', 'o-color', 'cell-matched');
+                    
+                    if (board[i] === 'X') cell.classList.add('x-color');
+                    if (board[i] === 'O') cell.classList.add('o-color');
+                }
+                
+                if (winPattern) {
+                    winPattern.forEach(i => cells[i].classList.add('cell-matched'));
+                }
+                
+                turnSymbolEl.textContent = currentPlayer;
+                turnSymbolEl.className = `game-cell d-inline-flex p-3 ${currentPlayer === 'X' ? 'x-color' : 'o-color'}`;
+                turnSymbolEl.style.width = '60px';
+                turnSymbolEl.style.height = '60px';
+            }
+            
+            function checkWinner() {
+                for (let combo of winCombos) {
+                    const [a,b,c] = combo;
+                    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                        winPattern = combo;
+                        gameActive = false;
+                        board[a] === 'X' ? scoreX++ : scoreO++;
+                        updateScores();
+                        return board[a];
+                    }
+                }
+                
+                if (!board.includes('')) {
+                    gameActive = false;
+                    winPattern = null;
+                    scoreDraw++;
+                    updateScores();
+                    return 'draw';
+                }
+                return null;
+            }
+            
+            function handleClick(e) {
+                const index = e.target.dataset.index;
+                if (!gameActive || board[index] !== '') return;
+                
+                board[index] = currentPlayer;
+                const result = checkWinner();
+                
+                if (result) {
+                    turnSymbolEl.textContent = result === 'draw' ? 'تعادل!' : `اللاعب ${result} فاز!`;
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+                
+                updateBoard();
+            }
+            
+            function updateScores() {
+                scoreXEl.textContent = scoreX;
+                scoreOEl.textContent = scoreO;
+                scoreDrawEl.textContent = scoreDraw;
+            }
+            
+            function resetGame() {
+                board = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'X';
+                gameActive = true;
+                winPattern = null;
+                turnSymbolEl.textContent = 'X';
+                turnSymbolEl.className = 'game-cell d-inline-flex p-3 x-color';
+                updateBoard();
+            }
+            
+            createBoard();
+            resetGame();
+            
+            document.getElementById('resetBtn').addEventListener('click', resetGame);
+            document.getElementById('clearScoreBtn').addEventListener('click', () => {
+                scoreX = scoreO = scoreDraw = 0;
+                updateScores();
+            });
+        })();
+    </script>
+</body>
+</html>

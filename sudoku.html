@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سودوكو ٥×٥ • Sudoku</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Unified Game Styles -->
+    <link rel="stylesheet" href=game-style.css">
+    
+    <style>
+        .sudoku-cell {
+            aspect-ratio: 1 / 1;
+            background: var(--game-bg-cell);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 -2px 0 #1d4b6e, 0 4px 0 #071019, 0 3px 6px black;
+            border: 1px solid var(--game-border-medium);
+            transition: 0.1s;
+            font-size: 28px;
+            font-weight: bold;
+            color: #f5e3b6;
+        }
+        
+        .sudoku-input {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffe4a2;
+            font-family: inherit;
+            border-radius: 16px;
+            padding: 0;
+            caret-color: var(--game-primary);
+        }
+        
+        .sudoku-input:focus {
+            background: #1e405b;
+            box-shadow: inset 0 0 0 3px var(--game-primary), var(--game-glow);
+            color: #fff3d1;
+        }
+        
+        .grid-5x5 .sudoku-cell:nth-child(5n+1) {
+            border-right: 3px solid var(--game-border-medium);
+        }
+        
+        .grid-5x5 .sudoku-cell:nth-child(5n) {
+            border-left: 3px solid var(--game-border-medium);
+        }
+        
+        .grid-5x5 .sudoku-cell:nth-child(-n+5) {
+            border-bottom: 3px solid var(--game-border-medium);
+        }
+        
+        .grid-5x5 .sudoku-cell:nth-child(n+21) {
+            border-top: 3px solid var(--game-border-medium);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Back button -->
+        <a href="funpage.html" class="btn btn-outline-warning mb-3">← العودة للقائمة</a>
+        
+        <h1 class="game-title">✧ سودوكو ٥×٥ ✧</h1>
+        <p class="game-subtitle">
+            <span class="level-badge">١-٥</span> 
+            لا تكرار في الصف أو العمود
+        </p>
+        
+        <!-- Game board -->
+        <div class="game-board">
+            <div class="grid-5x5" id="sudokuGrid"></div>
+        </div>
+        
+        <!-- Message -->
+        <div class="game-message" id="messageBox">🎯 املأ الخانات الفارغة بأرقام ١–٥</div>
+        
+        <!-- Controls -->
+        <div class="d-flex gap-3 justify-content-center">
+            <button class="btn-game" id="newGameBtn">🎲 لغز جديد</button>
+            <button class="btn-game" id="checkBtn">✓ تحقق من الحل</button>
+        </div>
+        
+        <div class="game-footer">
+            اضغط على الخلية وأدخل الرقم • الأرقام العربية مقبولة
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        (function(){
+            "use strict";
+
+            const SIZE = 5;
+            const EMPTY = 0;
+            
+            let solutionGrid = [];
+            let puzzleGrid = [];
+            let fixedMask = [];
+            let gameBoard = document.getElementById('sudokuGrid');
+            let messageEl = document.getElementById('messageBox');
+
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function createEmptyGrid() {
+                return Array(SIZE).fill().map(() => Array(SIZE).fill(EMPTY));
+            }
+
+            function generateFullSolution() {
+                const grid = createEmptyGrid();
+                
+                function isValidPlacement(grid, r, c, num) {
+                    for (let col = 0; col < SIZE; col++) {
+                        if (grid[r][col] === num) return false;
+                    }
+                    for (let row = 0; row < SIZE; row++) {
+                        if (grid[row][c] === num) return false;
+                    }
+                    return true;
+                }
+
+                function fillGrid(grid) {
+                    for (let r = 0; r < SIZE; r++) {
+                        for (let c = 0; c < SIZE; c++) {
+                            if (grid[r][c] === EMPTY) {
+                                const numbers = shuffleArray([1,2,3,4,5]);
+                                for (let num of numbers) {
+                                    if (isValidPlacement(grid, r, c, num)) {
+                                        grid[r][c] = num;
+                                        if (fillGrid(grid)) return true;
+                                        grid[r][c] = EMPTY;
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+
+                fillGrid(grid);
+                return grid;
+            }
+
+            function createPuzzleFromSolution(solution, difficulty = 0.45) {
+                const puzzle = solution.map(row => [...row]);
+                const mask = Array(SIZE).fill().map(() => Array(SIZE).fill(false));
+                
+                const totalCells = SIZE * SIZE;
+                const targetEmpty = Math.floor(totalCells * difficulty);
+                
+                const indices = [];
+                for (let i = 0; i < totalCells; i++) indices.push(i);
+                shuffleArray(indices);
+                
+                let emptyCount = 0;
+                for (let idx of indices) {
+                    if (emptyCount >= targetEmpty) break;
+                    const r = Math.floor(idx / SIZE);
+                    const c = idx % SIZE;
+                    puzzle[r][c] = EMPTY;
+                    mask[r][c] = false;
+                    emptyCount++;
+                }
+                
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        mask[r][c] = (puzzle[r][c] !== EMPTY);
+                    }
+                }
+                
+                return { puzzle, mask };
+            }
+
+            function generateNewPuzzle() {
+                const solution = generateFullSolution();
+                const { puzzle, mask } = createPuzzleFromSolution(solution, 0.45);
+                return { solution, puzzle, mask };
+            }
+
+            function renderGrid(puzzle, mask) {
+                gameBoard.innerHTML = '';
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        const cellValue = puzzle[r][c];
+                        const isGiven = mask[r][c];
+                        const cellDiv = document.createElement('div');
+                        cellDiv.className = 'sudoku-cell';
+                        
+                        if (isGiven) {
+                            const span = document.createElement('span');
+                            span.className = 'given-number';
+                            span.textContent = cellValue;
+                            cellDiv.appendChild(span);
+                        } else {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.inputMode = 'numeric';
+                            input.className = 'sudoku-input';
+                            input.setAttribute('data-row', r);
+                            input.setAttribute('data-col', c);
+                            
+                            input.addEventListener('input', function(e) {
+                                const val = this.value.trim();
+                                const digit = val.replace(/[^0-9١٢٣٤٥٦٧٨٩]/g, '');
+                                this.value = digit.length > 1 ? digit.charAt(0) : digit;
+                            });
+                            
+                            input.addEventListener('blur', function() {
+                                let val = this.value.trim();
+                                if (val === '') return;
+                                const arabicMap = {'١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9','٠':'0'};
+                                val = val.replace(/[١٢٣٤٥٦٧٨٩٠]/g, m => arabicMap[m] || m);
+                                const num = parseInt(val, 10);
+                                this.value = (!isNaN(num) && num >= 1 && num <= 5) ? num : '';
+                                this.style.background = '';
+                            });
+                            
+                            cellDiv.appendChild(input);
+                        }
+                        gameBoard.appendChild(cellDiv);
+                    }
+                }
+            }
+
+            function loadNewGame() {
+                const { solution, puzzle, mask } = generateNewPuzzle();
+                solutionGrid = solution;
+                puzzleGrid = puzzle;
+                fixedMask = mask;
+                renderGrid(puzzle, mask);
+                messageEl.textContent = '🧩 املأ الخانات الفارغة بأرقام ١–٥';
+            }
+
+            function checkSolution() {
+                const inputs = document.querySelectorAll('.sudoku-input');
+                let allFilled = true;
+                let correctCount = 0;
+                
+                const userGrid = createEmptyGrid();
+                
+                for (let input of inputs) {
+                    const row = parseInt(input.dataset.row);
+                    const col = parseInt(input.dataset.col);
+                    let val = input.value.trim();
+                    
+                    if (val === '') {
+                        allFilled = false;
+                        input.style.background = '#6b2e2e';
+                        continue;
+                    }
+                    
+                    const arabicMap = {'١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9','٠':'0'};
+                    val = val.replace(/[١٢٣٤٥٦٧٨٩٠]/g, m => arabicMap[m] || m);
+                    const num = parseInt(val, 10);
+                    
+                    if (isNaN(num) || num < 1 || num > 5) {
+                        allFilled = false;
+                        input.style.background = '#6b2e2e';
+                        continue;
+                    }
+                    
+                    userGrid[row][col] = num;
+                    
+                    if (num === solutionGrid[row][col]) {
+                        input.style.background = '#1f4a2c';
+                        correctCount++;
+                    } else {
+                        input.style.background = '#912b2b';
+                        allFilled = false;
+                    }
+                }
+                
+                let duplicateError = false;
+                for (let r = 0; r < SIZE; r++) {
+                    const rowSet = new Set();
+                    for (let c = 0; c < SIZE; c++) {
+                        const val = userGrid[r][c] || puzzleGrid[r][c];
+                        if (val !== EMPTY && rowSet.has(val)) duplicateError = true;
+                        if (val !== EMPTY) rowSet.add(val);
+                    }
+                }
+                for (let c = 0; c < SIZE; c++) {
+                    const colSet = new Set();
+                    for (let r = 0; r < SIZE; r++) {
+                        const val = userGrid[r][c] || puzzleGrid[r][c];
+                        if (val !== EMPTY && colSet.has(val)) duplicateError = true;
+                        if (val !== EMPTY) colSet.add(val);
+                    }
+                }
+                
+                if (duplicateError) {
+                    messageEl.textContent = '⚠️ يوجد تكرار في صف أو عمود!';
+                } else if (!allFilled) {
+                    messageEl.textContent = `❌ ${correctCount} من ${inputs.length} صحيحة`;
+                } else if (correctCount === inputs.length) {
+                    messageEl.textContent = '🏆 رائع! الحل صحيح 100% 🏆';
+                }
+            }
+
+            document.addEventListener('focusin', (e) => {
+                if (e.target.classList.contains('sudoku-input')) {
+                    e.target.style.background = '';
+                }
+            });
+
+            loadNewGame();
+            document.getElementById('newGameBtn').addEventListener('click', loadNewGame);
+            document.getElementById('checkBtn').addEventListener('click', checkSolution);
+        })();
+    </script>
+</body>
+</html>
