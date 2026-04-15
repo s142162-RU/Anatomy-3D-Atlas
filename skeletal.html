@@ -2,90 +2,200 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الهيكل العظمي | الأطلس الحيوي</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="atlas.css">
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        /* CSS Variables for design consistency */
+        :root {
+            --bg-dark: #050505;
+            --accent-cyan: #00d4ff;
+            --card-bg: #111111;
+            --border-color: #222222;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding-top: 100px; /* Space for fixed navbar */
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation Fixes --- */
+        .header-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; 
+            background-color: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ensure dropdown is visible over 3D model */
+        .dropdown-menu {
+            z-index: 3000 !important; 
+            background-color: #111 !important;
+            border: 1px solid #333;
+        }
+
+        .navbar-brand img { width: 45px; height: 45px; object-fit: contain; }
+        .nav-link { color: white !important; font-size: 14px; transition: 0.3s; padding: 0.5rem 1rem !important; }
+        .nav-link:hover { color: var(--accent-cyan) !important; }
+        .login-btn { border: 1px solid rgba(255,255,255,0.4); border-radius: 25px; padding: 6px 22px !important; }
+
+        /* --- 3D Viewer Styling --- */
+        .workspace-container {
+            background: #0a0a0a; border-radius: 25px; border: 1px solid var(--border-color);
+            height: 550px; position: relative; z-index: 1;
+        }
+
+        /* --- Side Info Panel Styling --- */
+        .side-info-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 25px; padding: 25px; height: auto; min-height: 550px;
+        }
+
+        .custom-pills .nav-link { color: #888 !important; border-radius: 12px; margin-bottom: 8px; }
+        .custom-pills .nav-link.active { background: var(--accent-cyan) !important; color: #000 !important; font-weight: bold; }
+
+        .fact-box { background: #1a1a1a; border-right: 4px solid var(--accent-cyan); padding: 15px; border-radius: 10px; margin-top: 15px; }
+        .table-custom { font-size: 14px; color: #ccc; }
+        .table-custom th { color: var(--accent-cyan); border-color: #333; }
+        
+        /* 3D Model Hotspot indicator */
+        .hotspot { background: var(--accent-cyan); border-radius: 50%; width: 16px; height: 16px; border: 2px solid white; box-shadow: 0 0 10px var(--accent-cyan); cursor: pointer; }
+    </style>
 </head>
 <body>
+
     <div class="header-wrapper">
-        <div class="header-container">
-            <nav class="nav-links">
-                <a href="index.html">الرئيسية</a>
-                <div class="dropdown">
-                    <a href="#" class="dropbtn">الأطلس الحيوي </a>
-                    <div class="dropdown-content">
-                        <a href="skeletal.html">الهيكل العظمي</a>
-                        <a href="muscular.html">الجهاز العضلي</a>
-                        <a href="circulatory.html">الجهاز الدوري</a>
-                        <a href="digestive.html">الجهاز الهضمي</a>
-                        <a href="nervous.html">الجهاز العصبي</a>
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="index.html">
+                    <img src="Logo.png" alt="Logo" class="me-2"> 
+                    <span class="fw-bold">ANATOMY ATLAS</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav mx-auto text-uppercase">
+                        <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-info" href="#" id="atlasDrop" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                الأطلس الحيوي
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="atlasDrop">
+                                <li><a class="dropdown-item" href="skeletal.html">الهيكل العظمي</a></li>
+                                <li><a class="dropdown-item" href="muscular.html">الجهاز العضلي</a></li>
+                                <li><a class="dropdown-item" href="circulatory.html">الجهاز الدوري</a></li>
+                                <li><a class="dropdown-item" href="digestive.html">الجهاز الهضمي</a></li>
+                                <li><a class="dropdown-item" href="nervous.html">الجهاز العصبي</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="lab.html">مختبر دراسي</a></li>
+                        <li class="nav-item"><a class="nav-link" href="questionnaire.html">استبيان</a></li>
+                        <li class="nav-item"><a class="nav-link" href="funpage.html">لعبة الذاكرة</a></li>
+                    </ul>
+                    <div class="d-flex justify-content-center">
+                        <a href="login.html" class="nav-link login-btn">تسجيل الدخول</a>
                     </div>
                 </div>
-                <a href="lab.html">مختبر دراسي</a>
-                <a href="questionnaire.html">استبيان</a>
-                <a href="funpage.html">لعبة الذاكرة</a>
-            </nav>
-            <div class="logo"><a href="index.html"><img src="Logo.png"></a></div>
-            <nav class="nav-links"><a href="about.html">من نحن</a><a href="contact.html">تواصل معنا</a><a href="login.html" class="login-btn">تسجيل الدخول</a></nav>
-
-            </nav>
-        </div>
+            </div>
+        </nav>
     </div>
 
-    <main class="main-layout">
-        <div class="workspace">
-            <model-viewer src="Skeletal.png" camera-controls auto-rotate style="width:100%; height:100%;">
-                <button class="hotspot" slot="hotspot-1" data-position="0m 1.7m 0m" onclick="updateDetail('الجمجمة', 'تحمي الدماغ وتتكون من عظام مسطحة ملتحمة.')"></button>
-            </model-viewer>
-        </div>
-        <div class="side-panel">
-            <div class="tabs">
-                <div class="tab" onclick="switchTab('nots', this)">ملاحظات</div>
-                <div class="tab" onclick="switchTab('links', this)">روابط</div>
-                <div class="tab active" onclick="switchTab('info', this)">معلومات</div>
-            </div>
-            <div id="info-tab" class="info-box content-pane">
-                <h2 id="title">الهيكل العظمي</h2>
-                <p id="desc">يتكون الهيكل العظمي للإنسان البالغ من 206 عظمة توفر الدعم والحماية لأعضاء الجسم.</p>
-                <div class="info-card">
-                    <strong>معلومات عامة:</strong>
-                    <p>يعمل العظم كمخزن للمعادن مثل الكالسيوم، ويقوم نخاع العظم بإنتاج خلايا الدم.</p>
+    <main class="container-fluid px-lg-5 mt-4 mb-5">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="workspace-container shadow-lg overflow-hidden">
+                    <model-viewer src="models/skeletal.glb" camera-controls auto-rotate shadow-intensity="1" style="width:100%; height:100%;">
+                        <button class="hotspot" slot="hotspot-1" data-position="0m 1.7m 0m" 
+                                onclick="updateDetail('الجمجمة', 'تحمي الدماغ وتتكون من عظام مسطحة ملتحمة توفر القوة والدعم.')"></button>
+                    </model-viewer>
+                </div>
+                <div class="mt-4 p-3 border-start border-info border-4 bg-dark bg-opacity-50 rounded-end shadow">
+                    <h5 class="text-info mb-1">الهيكل العظمي التفاعلي</h5>
+                    <p class="text-white-50 small mb-0">انقر على العظام لاستكشاف الإطار الداعم لجسم الإنسان.</p>
                 </div>
             </div>
-            <div id="links-tab" class="info-box content-pane" style="display:none;">
-                <h2>فيديوهات تعليمية</h2>
-                <div class="info-card">
-                    <ul>
-                        <li><a href="https://www.youtube.com/watch?v=dC0qMcMJ_Ug&pp=ygUl2LTYsditINi52LjYp9mFINis2LPZhSDYp9mE2KfZhtiz2KfZhg%3D%3D">📺 شرح عظام الجسم البشري</a></li>
-                        <li><a href="https://www.youtube.com/watch?v=CY-uad24hsM&pp=ygUe2YPZitmBINiq2LnZhdmEINin2YTZhdmB2KfYtdmE" target="_blank">📺 كيف تعمل المفاصل؟</a></li>
+
+            <div class="col-lg-5">
+                <div class="side-info-card shadow-lg d-flex flex-column">
+                    <ul class="nav nav-pills nav-fill custom-pills bg-black p-1 rounded-3 border border-secondary mb-4">
+                        <li class="nav-item"><button class="nav-link active" onclick="switchTab('info', this)">المعلومات</button></li>
+                        <li class="nav-item"><button class="nav-link" onclick="switchTab('links', this)">روابط</button></li>
+                        <li class="nav-item"><button class="nav-link" onclick="switchTab('notes', this)">ملاحظات</button></li>
                     </ul>
+
+                    <div id="content-display">
+                        <div id="info-tab" class="pane">
+                            <h2 id="title" class="fw-bold h4 mb-3" style="color: var(--accent-cyan);">الهيكل العظمي</h2>
+                            <p id="desc" class="text-white-50 lh-lg">الهيكل العظمي هو الإطار الداعم للجسم، يتكون من 206 عظمة توفر الحماية للأعضاء وتسهل الحركة.</p>
+                            
+                            <div class="fact-box">
+                                <span class="badge bg-info text-dark mb-2">حقيقة عظمية</span>
+                                <p class="small text-white mb-0">يولد الإنسان بحوالي 270 عظمة، ولكن مع النمو يلتحم العديد منها ليصل العدد إلى 206 عند البلوغ.</p>
+                            </div>
+
+                            <div class="table-responsive mt-4">
+                                <table class="table table-dark table-custom border-secondary">
+                                    <thead>
+                                        <tr><th>نوع العظم</th><th>مثال</th><th>الوظيفة</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>طويلة</td><td>عظم الفخذ</td><td>دعم الوزن</td></tr>
+                                        <tr><td>مسطحة</td><td>الجمجمة</td><td>الحماية</td></tr>
+                                        <tr><td>غير منتظمة</td><td>الفقرات</td><td>الدعم المرن</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="links-tab" class="pane" style="display:none;">
+                            <h5 class="text-info mb-3">فيديوهات تعليمية</h5>
+                            <div class="d-grid gap-2 text-start">
+                                <a href="https://www.youtube.com/watch?v=dC0qMcMJ_Ug" target="_blank" class="btn btn-outline-secondary btn-sm text-start py-2">📺 شرح عظام الجسم البشري</a>
+                                <a href="https://www.youtube.com/watch?v=CY-uad24hsM" target="_blank" class="btn btn-outline-secondary btn-sm text-start py-2">📺 كيف تعمل المفاصل؟</a>
+                            </div>
+                        </div>
+
+                        <div id="notes-tab" class="pane" style="display:none;">
+                            <h5 class="text-info mb-3">ملاحظاتك</h5>
+                            <textarea class="form-control bg-dark text-white border-secondary" rows="10" placeholder="سجل أهم الملاحظات حول الجهاز العظمي..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-4 d-flex gap-2">
+                        <button class="btn btn-info flex-grow-1 fw-bold rounded-pill shadow-sm">+ إضافة نوتة</button>
+                        <button class="btn btn-outline-light flex-grow-1 rounded-pill small">تصدير PDF</button>
+                    </div>
                 </div>
-            </div>
-            <div id="nots-tab" class="info-box content-pane" style="display:none;">
-                <h2>ملاحظاتك</h2>
-                <textarea style="width:100%; height:200px; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
-            </div>
-            <div class="footer-btns">
-                <button class="btn btn-blue">+ إضافة نوتة</button>
-                <button class="btn btn-green">إكسبورت PDF</button>
             </div>
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Tab switching logic for the side panel
         function switchTab(tabId, el) {
-            document.querySelectorAll('.content-pane').forEach(p => p.style.display = 'none');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.custom-pills .nav-link').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId + '-tab').style.display = 'block';
             el.classList.add('active');
         }
+
+        // Updating Info based on 3D interaction
         function updateDetail(t, d) {
-            switchTab('info', document.querySelectorAll('.tab')[2]);
+            const infoBtn = document.querySelectorAll('.custom-pills .nav-link')[0];
+            switchTab('info', infoBtn);
             document.getElementById('title').innerText = t;
             document.getElementById('desc').innerText = d;
         }
     </script>
+    <footer class="text-center text-secondary py-5 border-top border-secondary">
+        <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
+    </footer>
 </body>
 </html>
