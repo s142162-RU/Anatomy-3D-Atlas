@@ -268,6 +268,8 @@
                     </div>
                 </div>
                 <a href="lab.html">مختبر دراسي</a>
+                <a href="questionnaire.html">استبيان</a>
+                <a href="funpage.html">لعبة الذاكرة</a>
             </div>
 
             <a href="index.html" class="logo-img-link">
@@ -293,24 +295,6 @@
 
     </section>
 
-    <div class="content-area">
-        <h2>استكشف العالم</h2>
-        <p>استمتع برحلة تعليمية فريدة في أعماق جسم الإنسان.</p>
-
-
-        
-        <div class="grid-layout">
-            <div class="grid-item"><img src="Skeletal.png" alt="Skeletal"></div>
-            <div class="grid-item"><img src="Muscular.png" alt="Muscular"></div>
-            <div class="grid-item"><img src="Nervous.png" alt="Nervous"></div>
-        </div>
-
-        <div class="grid-layout">
-            <div class="grid-item"><img src="digestive.png" alt="digestive"></div>
-            <div class="grid-item"><img src="circulatory.png" alt="circulatory"></div>
-        </div>
-
-    </div>
 
 
     <section class="cta-section">
@@ -320,9 +304,88 @@
     </div>
 </section>
 
-    <footer class="footer">
+        <div class="container my-5">
+        <h2 class="text-center mb-4">استمتع برحلة تعليمية فريدة في أعماق جسم الإنسان.</h2>
+        <div id="anatomyCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#anatomyCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#anatomyCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#anatomyCarousel" data-bs-slide-to="2"></button>
+                <button type="button" data-bs-target="#anatomyCarousel" data-bs-slide-to="3"></button>
+                <button type="button" data-bs-target="#anatomyCarousel" data-bs-slide-to="4"></button>
+            </div>
+            <div class="carousel-inner rounded-4">
+                <div class="carousel-item active">
+                    <img src="Skeletal.png" class="d-block w-100" alt="Skeletal System" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <h5>الجهاز الهيكلي</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="Muscular.png" class="d-block w-100" alt="Muscular System" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <h5>الجهاز العضلي</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="Nervous.png" class="d-block w-100" alt="Nervous System" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <h5>الجهاز العصبي</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="digestive.png" class="d-block w-100" alt="digestive System" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <h5>الجهاز الهضمي</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="circulatory.png" class="d-block w-100" alt="circulatory System" style="height: 400px; object-fit: cover;">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                        <h5>الجهاز الدوري</h5>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#anatomyCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#anatomyCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-primary py-2 overflow-hidden">
+        <div id="scrollingBanner" class="text-white fw-semibold" style="white-space: nowrap; display: inline-block; animation: scrollText 20s linear infinite;">
+             مرحباً بك في Anatomy Atlas - منصة التشريح التفاعلية ثلاثية الأبعاد 
+        </div>
+    </div>
+
+    <style>
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .tracking-wide { letter-spacing: 4px; }
+    </style>
+
+    <footer class="text-center text-secondary py-5 border-top border-secondary">
         <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function updateScrollingBanner() {
+            const banner = document.getElementById('scrollingBanner');
+            if (banner) {
+                banner.innerHTML = ` مرحباً بك في Anatomy Atlas |  تعلم...استمتع...تحدى نفسك! | استكشف جسم الإنسان بطريقة ثلاثية الأبعاد وبكل سهولة!`;
+            }
+        }
+        updateScrollingBanner();
+        setInterval(updateScrollingBanner, 1000);
+    </script>
+
 </body>
 </html>
+
