@@ -32,5 +32,67 @@
             </div>
         </div>
     </div>
+
+        <script>
+        // Light JS validation for signup form
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            let isValid = true;
+
+            // Name: required, only letters and spaces
+            let name = document.getElementById('fullname').value.trim();
+            let nameErr = document.getElementById('nameError');
+            if (name === '') {
+                nameErr.innerText = '✖ Full name is required';
+                isValid = false;
+            } else if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(name)) {
+                nameErr.innerText = '✖ Only letters and spaces allowed';
+                isValid = false;
+            } else {
+                nameErr.innerText = '';
+            }
+
+            // Email: required, must end with .com or .edu
+            let email = document.getElementById('email').value.trim();
+            let emailErr = document.getElementById('emailError');
+            let emailPattern = /^[^\s@]+@[^\s@]+\.(com|edu)$/i;
+            if (email === '') {
+                emailErr.innerText = '✖ Email is required';
+                isValid = false;
+            } else if (!emailPattern.test(email)) {
+                emailErr.innerText = '✖ Email must end with .com or .edu';
+                isValid = false;
+            } else {
+                emailErr.innerText = '';
+            }
+
+            // Password: min 8 chars, at least one uppercase and one digit
+            let pass = document.getElementById('password').value;
+            let passErr = document.getElementById('passError');
+            let passPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (pass === '') {
+                passErr.innerText = '✖ Password is required';
+                isValid = false;
+            } else if (!passPattern.test(pass)) {
+                passErr.innerText = '✖ 8+ chars, 1 uppercase & 1 digit';
+                isValid = false;
+            } else {
+                passErr.innerText = '';
+            }
+
+            // Confirm password match
+            let confirm = document.getElementById('confirm_password').value;
+            let confirmErr = document.getElementById('confirmError');
+            if (confirm !== pass) {
+                confirmErr.innerText = '✖ Passwords do not match';
+                isValid = false;
+            } else {
+                confirmErr.innerText = '';
+            }
+
+            if (!isValid) {
+                e.preventDefault();  // stop submission if errors
+            }
+        });
+    </script>
 </body>
 </html>
