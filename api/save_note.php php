@@ -6,8 +6,7 @@ $system = $data['system'] ?? '';
 $organ_id = $data['organ_id'] ?? '';
 $note = $data['note'] ?? '';
 
-// هنا يمكنك الاتصال بقاعدة البيانات وتنفيذ INSERT أو UPDATE
-// مثال باستخدام ملف نصي مؤقت للتجربة
+
 $filename = "notes_{$system}.json";
 $allNotes = [];
 if (file_exists($filename)) {
