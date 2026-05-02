@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المختبر الدراسي | Anatomy Atlas</title>
+    <title>المختبر الدراسي المتقدم | Anatomy Atlas</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root {
             --bg-dark: #050505;
             --accent-cyan: #00d4ff;
             --card-bg: #111111;
+            --border-color: #222;
         }
         body {
             background-color: var(--bg-dark);
@@ -23,6 +26,49 @@
             position: fixed; top: 0; left: 0; width: 100%; z-index: 2000; 
             background-color: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .navbar-brand img { width: 45px; }
+        .nav-link { color: white !important; font-size: 14px; }
+        .nav-link:hover { color: var(--accent-cyan) !important; }
+        .dropdown-menu { background-color: #111 !important; border: 1px solid #333; }
+        
+        .system-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            transition: 0.3s;
+            height: 100%;
+        }
+        .system-card:hover { border-color: var(--accent-cyan); transform: translateY(-5px); }
+        .system-title {
+            color: var(--accent-cyan);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .progress-bar-container {
+            background: #1e293b;
+            border-radius: 20px;
+            height: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent-cyan), #4ade80);
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .stat-text {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .btn-sm-custom {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+            margin-top: 8px;
         }
         .lab-card {
             background: var(--card-bg);
@@ -40,6 +86,16 @@
             border-right: 5px solid var(--accent-cyan);
         }
         footer { border-top: 1px solid #222; padding: 30px 0; margin-top: 50px; background: #0a0a0a; }
+        .clickable-row {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .clickable-row:hover {
+            background-color: #1e293b;
+        }
+        @media (max-width: 768px) {
+            .system-card { margin-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -58,7 +114,7 @@
                 <ul class="navbar-nav mx-auto text-uppercase">
                     <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="atlasDrop" data-bs-toggle="dropdown">الأطلس الحيوي</a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">الأطلس الحيوي</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li><a class="dropdown-item" href="skeletal.html">الهيكل العظمي</a></li>
                             <li><a class="dropdown-item" href="muscular.html">الجهاز العضلي</a></li>
@@ -76,114 +132,268 @@
     </nav>
 </div>
 
-<main class="container py-5">
-    <div class="row g-4">
-        
+<main class="container py-4">
+    <!-- ========== 1. قاموس الأجزاء + BMI ========== -->
+    <div class="row g-4 mb-5">
         <div class="col-lg-7">
             <div class="lab-card shadow">
-                <h3 class="text-info mb-4">قاموس الأجزاء التشريحية</h3>
-                <div class="mb-4">
-                    <input type="text" id="anatomySearch" class="form-control bg-dark text-white border-secondary" placeholder="ابحث عن عضو أو عظمة (مثلاً: الجمجمة، القلب)..." onkeyup="filterTable()">
-                </div>
+                <h3 class="text-info mb-4">📖 قاموس الأجزاء التشريحية</h3>
+                <input type="text" id="anatomySearch" class="form-control bg-dark text-white border-secondary mb-3" placeholder="ابحث عن عضو...">
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover border-secondary" id="anatomyTable">
-                        <thead>
-                            <tr>
-                                <th>العضو/الجزء</th>
-                                <th>الجهاز التابع له</th>
-                                <th>الوظيفة الرئيسية</th>
-                            </tr>
-                        </thead>
+                    <table class="table table-dark table-hover" id="anatomyTable">
+                        <thead><tr><th>العضو</th><th>الجهاز</th><th>الوظيفة</th></tr></thead>
                         <tbody>
-                            <tr><td>الجمجمة</td><td>الهيكل العظمي</td><td>حماية الدماغ</td></tr>
-                            <tr><td>القلب</td><td>الجهاز الدوري</td><td>ضخ الدم</td></tr>
-                            <tr><td>المعدة</td><td>الجهاز الهضمي</td><td>هضم الطعام</td></tr>
-                            <tr><td>العضلة الثنائية</td><td>الجهاز العضلي</td><td>تحريك الذراع</td></tr>
-                            <tr><td>النخاع الشوكي</td><td>الجهاز العصبي</td><td>نقل الإشارات</td></tr>
+                            <tr data-system="skeletal"><td>الجمجمة</td><td>الهيكل العظمي</td><td>حماية الدماغ</td></tr>
+                            <tr data-system="skeletal"><td>الفك السفلي</td><td>الهيكل العظمي</td><td>المضغ والكلام</td></tr>
+                            <tr data-system="circulatory"><td>القلب</td><td>الجهاز الدوري</td><td>ضخ الدم</td></tr>
+                            <tr data-system="digestive"><td>المعدة</td><td>الجهاز الهضمي</td><td>هضم الطعام</td></tr>
+                            <tr data-system="muscular"><td>العضلة الثنائية</td><td>الجهاز العضلي</td><td>تحريك الذراع</td></tr>
+                            <tr data-system="nervous"><td>النخاع الشوكي</td><td>الجهاز العصبي</td><td>نقل الإشارات</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
         <div class="col-lg-5">
             <div class="lab-card shadow">
-                <h3 class="text-info mb-4">حاسبة مؤشر كتلة الجسم (BMI)</h3>
-                <p class="small text-secondary mb-4">أداة طبية لتقييم تناسق الوزن مع الطول.</p>
-                
-                <div class="mb-3">
-                    <label class="form-label small">الوزن (كيلوجرام)</label>
-                    <input type="number" id="weight" class="form-control bg-dark text-white border-secondary" placeholder="مثلاً: 70">
-                </div>
-                <div class="mb-4">
-                    <label class="form-label small">الطول (سنتيمتر)</label>
-                    <input type="number" id="height" class="form-control bg-dark text-white border-secondary" placeholder="مثلاً: 170">
-                </div>
-                <button class="btn btn-info w-100 fw-bold rounded-pill" onclick="calculateBMI()">احسب الآن</button>
-
-                <div id="bmiResult" class="calc-result">
-                    <h5 class="mb-1">النتيجة: <span id="bmiValue"></span></h5>
-                    <p class="mb-0 small" id="bmiStatus"></p>
-                </div>
+                <h3 class="text-info mb-4">⚖️ حاسبة BMI</h3>
+                <div class="mb-3"><label class="form-label small">الوزن (كجم)</label><input type="number" id="weight" class="form-control bg-dark text-white"></div>
+                <div class="mb-3"><label class="form-label small">الطول (سم)</label><input type="number" id="height" class="form-control bg-dark text-white"></div>
+                <button class="btn btn-info w-100 fw-bold rounded-pill" onclick="calculateBMI()">احسب</button>
+                <div id="bmiResult" class="calc-result"><h5>النتيجة: <span id="bmiValue"></span></h5><p id="bmiStatus"></p></div>
             </div>
         </div>
+    </div>
 
+    <!-- ========== 2. لوحة تقدم الأجهزة ========== -->
+    <h3 class="text-info mb-4">📊 تقدمي في أجهزة الجسم</h3>
+    <div class="row g-4" id="systemsProgressContainer">
+        <!-- تعبأ ديناميكياً -->
     </div>
 </main>
 
-<footer>
-    <div class="container text-center">
-        <p class="mb-0">© 2026 Anatomy Atlas || SQU Lab Section</p>
-    </div>
-</footer>
-
 <script>
-    // Function 1: Filter Anatomy Table (Requirement 12)
+    // --------------------- تعريف الأجهزة ---------------------
+    const SYSTEMS = [
+        { id: 'skeletal', name: 'الهيكل العظمي', page: 'skeletal.html' },
+        { id: 'muscular', name: 'الجهاز العضلي', page: 'muscular.html' },
+        { id: 'circulatory', name: 'الجهاز الدوري', page: 'circulatory.html' },
+        { id: 'digestive', name: 'الجهاز الهضمي', page: 'digestive.html' },
+        { id: 'nervous', name: 'الجهاز العصبي', page: 'nervous.html' }
+    ];
+
+    // أسماء الأعضاء العربية (للملاحظات)
+    const organNames = {
+        skull:'الجمجمة', mandible:'الفك السفلي', clavicle:'الترقوة', humerus:'عظم العضد', sternum:'القص',
+        ribs:'الأضلاع', lumbar_vertebrae:'الفقرات القطنية', ilium:'الحرقفة', femur:'عظم الفخذ', patella:'الرضفة',
+        biceps:'العضلة ذات الرأسين', pectoralis:'العضلة الصدرية', quadriceps:'العضلة الرباعية',
+        heart:'القلب', aorta:'الأبهر', arteries:'الشرايين',
+        stomach:'المعدة', liver:'الكبد', intestine:'الأمعاء',
+        brain:'الدماغ', spinal_cord:'النخاع الشوكي', neurons:'الخلايا العصبية'
+    };
+
+    // الحصول على العدد الإجمالي للأعضاء لكل جهاز (من localStorage أو افتراضي)
+    function getTotalOrgans(systemId) {
+        let key = `totalOrgans_${systemId}`;
+        let stored = localStorage.getItem(key);
+        if (stored) return parseInt(stored);
+        // قيم افتراضية إذا لم تخزن صفحات الأجهزة العدد بعد
+        const defaults = { skeletal: 10, muscular: 3, circulatory: 3, digestive: 3, nervous: 3 };
+        return defaults[systemId] || 3;
+    }
+
+    // الحصول على قائمة الأعضاء المقروءة
+    function getStudiedOrgans(systemId) {
+        let key = `studiedOrgans_${systemId}`;
+        let stored = localStorage.getItem(key);
+        if (stored) return JSON.parse(stored);
+        return [];
+    }
+
+    // جلب ملاحظات الطالب لأعضاء هذا الجهاز
+    function getNotesForSystem(systemId, organIdList) {
+        let notes = [];
+        for (let organId of organIdList) {
+            let noteText = localStorage.getItem(`note_${organId}`);
+            if (noteText && noteText.trim() !== "") {
+                notes.push({ organId: organId, organName: organNames[organId] || organId, text: noteText });
+            }
+        }
+        return notes;
+    }
+
+    // جلب نتائج الاختبارات المسجلة لهذا الجهاز
+    function getQuizResults(systemId) {
+        let key = `quizResults_${systemId}`;
+        let stored = localStorage.getItem(key);
+        if (stored) return JSON.parse(stored);
+        return [];
+    }
+
+    // عرض بطاقات التقدم
+    function renderProgressCards() {
+        const container = document.getElementById('systemsProgressContainer');
+        container.innerHTML = '';
+        for (let sys of SYSTEMS) {
+            let total = getTotalOrgans(sys.id);
+            let studied = getStudiedOrgans(sys.id);
+            let completedCount = studied.length;
+            let percent = total > 0 ? (completedCount / total) * 100 : 0;
+            
+            let card = document.createElement('div');
+            card.className = 'col-md-6 col-lg-4';
+            card.innerHTML = `
+                <div class="system-card">
+                    <div class="system-title">${sys.name}</div>
+                    <div class="progress-bar-container"><div class="progress-fill" style="width:${percent}%"></div></div>
+                    <div class="stat-text">📌 الإنجاز: ${completedCount} من ${total} عضواً (${Math.round(percent)}%)</div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-outline-info btn-sm-custom" onclick="exportSystemPDF('${sys.id}')">📄 طباعة تقرير الجهاز</button>
+                        <button class="btn btn-outline-warning btn-sm-custom" onclick="goToQuiz('${sys.id}')">🎯 إعداد اختبار AI</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    // تصدير PDF شامل (معلومات الجهاز + الملاحظات + نتائج الاختبارات)
+    async function exportSystemPDF(systemId) {
+        const sys = SYSTEMS.find(s => s.id === systemId);
+        if (!sys) return;
+        
+        let studentName = localStorage.getItem('studentName');
+        if (!studentName) {
+            studentName = prompt("📝 أدخل اسمك الكامل لطباعة التقرير:", "طالب التشريح");
+            if (!studentName) studentName = "طالب مجهول";
+            localStorage.setItem('studentName', studentName);
+        }
+        let studentEmail = localStorage.getItem('studentEmail') || "غير مدخل";
+        
+        let total = getTotalOrgans(systemId);
+        let studied = getStudiedOrgans(systemId);
+        let percent = total > 0 ? (studied.length / total) * 100 : 0;
+        
+        // جلب الملاحظات
+        let notes = getNotesForSystem(systemId, studied); // نعطي الأعضاء المقروءة فقط
+        // جلب نتائج الاختبارات
+        let quizResults = getQuizResults(systemId);
+        
+        const reportDiv = document.createElement('div');
+        reportDiv.style.backgroundColor = '#0a0f1a';
+        reportDiv.style.color = 'white';
+        reportDiv.style.padding = '20px';
+        reportDiv.style.fontFamily = 'Arial, sans-serif';
+        reportDiv.style.direction = 'rtl';
+        reportDiv.style.width = '600px';
+        
+        let quizHtml = '';
+        if (quizResults.length === 0) {
+            quizHtml = '<p>لا توجد اختبارات سابقة مسجلة لهذا الجهاز.</p>';
+        } else {
+            quizHtml = '<ul>';
+            quizResults.forEach(res => {
+                quizHtml += `<li><strong>${res.organName || 'عضو'}</strong> - التاريخ: ${res.date || 'غير محدد'} - الدرجة: ${res.score}/${res.total} (${Math.round((res.score/res.total)*100)}%)<br>`;
+                if (res.details) quizHtml += `<small>${res.details}</small>`;
+                quizHtml += `</li>`;
+            });
+            quizHtml += '</ul>';
+        }
+        
+        reportDiv.innerHTML = `
+            <h2 style="color:#00d4ff; text-align:center;">🧠 تقرير المختبر الدراسي - ${sys.name}</h2>
+            <hr style="border-color:#444;">
+            <p><strong>👤 الطالب:</strong> ${studentName} | <strong>📧 البريد:</strong> ${studentEmail}</p>
+            <p><strong>📅 التاريخ:</strong> ${new Date().toLocaleDateString('ar-EG')}</p>
+            <p><strong>📊 نسبة التقدم:</strong> ${Math.round(percent)}% (${studied.length}/${total} عضواً مدروساً)</p>
+            <h3 style="color:#00d4ff;">📝 ملاحظاتي الدراسية:</h3>
+            ${notes.length === 0 ? '<p>لا توجد ملاحظات مسجلة بعد.</p>' : 
+              notes.map(n => `<div style="background:#1e293b; padding:12px; border-radius:12px; margin-bottom:8px;"><strong>🔹 ${n.organName}:</strong><br>${n.text}</div>`).join('')}
+            <h3 style="color:#00d4ff; margin-top:20px;">📋 سجل الاختبارات (AI):</h3>
+            ${quizHtml}
+            <hr>
+            <p style="font-size:12px; color:#aaa;">تم التصدير من Anatomy Atlas - المختبر الدراسي المتقدم</p>
+        `;
+        document.body.appendChild(reportDiv);
+        
+        try {
+            const canvas = await html2canvas(reportDiv, { scale: 2, backgroundColor: '#0a0f1a' });
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 190;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+            pdf.save(`${sys.name}_تقرير_${studentName}.pdf`);
+        } catch (err) {
+            console.error(err);
+            alert("حدث خطأ أثناء إنشاء PDF، حاول مرة أخرى.");
+        }
+        document.body.removeChild(reportDiv);
+    }
+
+    function goToQuiz(systemId) {
+        window.location.href = `quiz-setup.html?system=${systemId}`;
+    }
+
+    // وظائف BMI والبحث
     function filterTable() {
         let input = document.getElementById('anatomySearch').value.toUpperCase();
         let table = document.getElementById('anatomyTable');
-        let tr = table.getElementsByTagName('tr');
-
-        for (let i = 1; i < tr.length; i++) {
-            let td = tr[i].getElementsByTagName('td')[0]; // Search in first column
-            if (td) {
-                let textValue = td.textContent || td.innerText;
-                tr[i].style.display = (textValue.toUpperCase().indexOf(input) > -1) ? "" : "none";
+        let rows = table.getElementsByTagName('tr');
+        for (let i = 1; i < rows.length; i++) {
+            let cells = rows[i].getElementsByTagName('td');
+            let match = false;
+            if (cells.length > 0) {
+                let text = cells[0].innerText.toUpperCase();
+                if (text.includes(input)) match = true;
             }
+            rows[i].style.display = match ? "" : "none";
         }
     }
-
-    // Function 2: Calculate BMI (Requirement 16 & 17)
+    
     function calculateBMI() {
-        let weight = parseFloat(document.getElementById('weight').value);
-        let height = parseFloat(document.getElementById('height').value) / 100; // convert cm to meters
-        
-        // Basic Logic & Conditions
-        if (weight > 0 && height > 0) {
-            let bmi = (weight / (height * height)).toFixed(1);
+        let w = parseFloat(document.getElementById('weight').value);
+        let h = parseFloat(document.getElementById('height').value) / 100;
+        if (w > 0 && h > 0) {
+            let bmi = (w / (h * h)).toFixed(1);
             document.getElementById('bmiValue').innerText = bmi;
-            
             let status = "";
-            let color = "";
-
-            // Conditional Logic for Medical Status
-            if (bmi < 18.5) { status = "نقص في الوزن"; color = "#ffc107"; }
-            else if (bmi >= 18.5 && bmi <= 24.9) { status = "وزن مثالي صحي"; color = "#28a745"; }
-            else if (bmi >= 25 && bmi <= 29.9) { status = "زيادة في الوزن"; color = "#fd7e14"; }
-            else { status = "سمنة مفرطة"; color = "#dc3545"; }
-
+            if (bmi < 18.5) status = "نقص وزن";
+            else if (bmi < 25) status = "وزن طبيعي";
+            else if (bmi < 30) status = "زيادة وزن";
+            else status = "سمنة";
             document.getElementById('bmiStatus').innerText = status;
-            document.getElementById('bmiStatus').style.color = color;
             document.getElementById('bmiResult').style.display = "block";
-        } else {
-            alert("يرجى إدخال قيم صحيحة للوزن والطول");
-        }
+        } else alert("أدخل قيماً صحيحة");
     }
+
+    // ربط البحث وإضافة خاصية النقر على الصفوف للانتقال إلى صفحة الجهاز
+    function attachTableClick() {
+        const rows = document.querySelectorAll('#anatomyTable tbody tr');
+        rows.forEach(row => {
+            row.classList.add('clickable-row');
+            row.addEventListener('click', () => {
+                const systemAttr = row.getAttribute('data-system');
+                if (systemAttr) {
+                    const sys = SYSTEMS.find(s => s.id === systemAttr);
+                    if (sys) window.location.href = sys.page;
+                }
+            });
+        });
+    }
+
+    document.getElementById('anatomySearch').addEventListener('keyup', filterTable);
+    attachTableClick();
+    
+    // تحديث بطاقات التقدم كل 2 ثانية (للاستماع للتغييرات من صفحات أخرى)
+    renderProgressCards();
+    setInterval(() => renderProgressCards(), 2000);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<footer class="text-center text-secondary py-5 border-top border-secondary">
-        <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
+<footer class="text-center text-secondary py-5 border-top">
+    <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
 </footer>
 </body>
 </html>
