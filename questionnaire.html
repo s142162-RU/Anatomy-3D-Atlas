@@ -179,42 +179,64 @@ input[type="range"]::-webkit-slider-thumb {
     </p>
 
     <div class="form-card">
-        <form id="form">
+        <form id="form" action="insert.php" method="POST">
 
             <label class="form-label-custom">الاسم الكامل *</label>
-            <input type="text" id="name" class="form-control-custom">
+            <input type="text" id="name" name="name" class="form-control-custom">
 
             <label class="form-label-custom mt-3">مستوى الدراسة *</label>
-            <div>
-                <label class="form-check-custom"><input type="radio" name="level"> طالب طب</label>
-                <label class="form-check-custom"><input type="radio" name="level"> طالب تمريض</label>
-                <label class="form-check-custom"><input type="radio" name="level"> طالب ثانوي</label>
-                <label class="form-check-custom"><input type="radio" name="level"> أستاذ/باحث</label>
+            <div class="d-flex flex-wrap gap-3 justify-content-center text-center w-100">
+                <label class="form-check-custom">
+                    <input type="radio" name="level" value="طالب بكالوريوس"> طالب بكالوريوس
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="radio" name="level" value="طالب ماجستير"> طالب ماجستير
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="radio" name="level" value="طالب مدرسة"> طالب مدرسة
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="radio" name="level" value="أستاذ/باحث"> أستاذ/باحث
+                </label>
             </div>
 
             <label class="form-label-custom mt-3">الأنظمة التشريحية</label>
-            <div>
-                <label class="form-check-custom"><input type="checkbox"> الهيكل العظمي</label>
-                <label class="form-check-custom"><input type="checkbox"> الجهاز العضلي</label>
-                <label class="form-check-custom"><input type="checkbox"> الجهاز الدوري</label>
-                <label class="form-check-custom"><input type="checkbox"> الجهاز العصبي</label>
+            <div class="d-flex flex-wrap gap-3 justify-content-center text-center w-100">
+                <label class="form-check-custom">
+                    <input type="checkbox" name="systems[]" value="الهيكل العظمي"> الهيكل العظمي
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="checkbox" name="systems[]" value="الجهاز العضلي"> الجهاز العضلي
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="checkbox" name="systems[]" value="الجهاز الدوري"> الجهاز الدوري
+                </label>
+
+                <label class="form-check-custom">
+                    <input type="checkbox" name="systems[]" value="الجهاز العصبي"> الجهاز العصبي
+                </label>
             </div>
 
             <label class="form-label-custom mt-3">تقييمك (1-10) *</label>
 
             <div class="range-container">
-                <input type="number" id="num" class="range-value" value="5" min="1" max="10">
+                <input type="number" id="num" name="rating" class="range-value" value="5" min="1" max="10">
                 
                 <div class="custom-range-wrapper">
                     <div class="range-fill" id="rangeFill"></div>
-                    <input type="range" id="range" min="1" max="10" value="5">
+                    <input type="number" id="num" name="rating" class="range-value" value="5" min="1" max="10">
                 </div>
             </div>
 
             <label class="form-label-custom mt-3">اقتراحاتك</label>
-            <textarea class="form-control-custom" rows="3"></textarea>
+            <textarea name="suggestion" class="form-control-custom" rows="3"></textarea>
 
-            <button class="submit-btn">إرسال الاستبيان </button>
+            <button type="submit" class="submit-btn">إرسال الاستبيان</button>
 
         </form>
     </div>
@@ -248,6 +270,86 @@ num.addEventListener("input", () => {
 });
 
 updateFill(range.value);
+
+
+document.getElementById("form").addEventListener("submit", function(e) {
+
+    let valid = true;
+
+    // reset errors
+    document.querySelectorAll(".error").forEach(el => el.remove());
+
+    // name
+    let name = document.querySelector("input[name='name']");
+    if(name.value.trim().length < 3){
+        showError(name, "الاسم يجب أن يكون 3 أحرف على الأقل");
+        valid = false;
+    }
+
+    // level (radio)
+    let level = document.querySelector("input[name='level']:checked");
+    if(!level){
+        showGroupError("level", "اختر مستوى الدراسة");
+        valid = false;
+    }
+
+    // checkbox systems
+    let systems = document.querySelectorAll("input[name='systems[]']:checked");
+    if(systems.length === 0){
+        showGroupError("systems", "اختر نظام واحد على الأقل");
+        valid = false;
+    }
+
+    // rating
+    let rating = document.querySelector("input[name='rating']");
+    if(rating.value < 1 || rating.value > 10){
+        showError(rating, "التقييم يجب أن يكون بين 1 و 10");
+        valid = false;
+    }
+
+    // suggestion (optional limit)
+    let suggestion = document.querySelector("textarea[name='suggestion']");
+    if(suggestion.value.length > 200){
+        showError(suggestion, "الاقتراح لا يجب أن يتجاوز 200 حرف");
+        valid = false;
+    }
+
+    if(!valid){
+        e.preventDefault();
+    }
+
+});
+
+// error under input
+function showError(input, message){
+    let err = document.createElement("div");
+    err.className = "error";
+    err.style.color = "red";
+    err.style.fontSize = "12px";
+    err.innerText = message;
+    input.parentNode.appendChild(err);
+}
+
+// error for groups
+function showGroupError(group, message){
+    let err = document.createElement("div");
+    err.className = "error";
+    err.style.color = "red";
+    err.style.fontSize = "12px";
+
+    let ref;
+
+    if(group === "level"){
+        ref = document.querySelector("input[name='level']").parentNode;
+    }
+
+    if(group === "systems"){
+        ref = document.querySelector("input[name='systems[]']").parentNode;
+    }
+
+    err.innerText = message;
+    ref.appendChild(err);
+}
 </script>
 
 </body>
