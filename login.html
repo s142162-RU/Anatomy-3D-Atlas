@@ -32,5 +32,38 @@
             </div>
         </div>
     </div>
+        <script>
+        // Simple JS validation for login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            let isValid = true;
+
+            // Email validation: required and basic format
+            let email = document.getElementById('email').value.trim();
+            let emailErr = document.getElementById('emailError');
+            if (email === '') {
+                emailErr.innerText = '✖ Email is required';
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailErr.innerText = '✖ Invalid email format';
+                isValid = false;
+            } else {
+                emailErr.innerText = '';
+            }
+
+            // Password: required (non-empty)
+            let password = document.getElementById('password').value;
+            let passErr = document.getElementById('passError');
+            if (password === '') {
+                passErr.innerText = '✖ Password is required';
+                isValid = false;
+            } else {
+                passErr.innerText = '';
+            }
+
+            if (!isValid) {
+                e.preventDefault(); // block submission if errors
+            }
+        });
+    </script>
 </body>
 </html>
