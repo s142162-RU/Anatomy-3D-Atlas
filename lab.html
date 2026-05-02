@@ -351,6 +351,62 @@
             rows[i].style.display = match ? "" : "none";
         }
     }
+
+function loadAllOrgansForDictionary() {
+    let allOrgans = [];
+    const systems = ['skeletal', 'muscular', 'circulatory', 'digestive', 'nervous'];
+    for (let sys of systems) {
+        let key = `organsList_${sys}`;
+        let organsList = localStorage.getItem(key);
+        if (organsList) {
+            let organs = JSON.parse(organsList);
+            for (let organ of organs) {
+                allOrgans.push({
+                    name: organ.name,
+                    system: sys,
+                    function: organ.details.substring(0, 80) + (organ.details.length > 80 ? '...' : '')
+                });
+            }
+        }
+    }
+    if (allOrgans.length === 0) {
+        allOrgans = [
+            { name: "الجمجمة", system: "skeletal", function: "حماية الدماغ" },
+            { name: "القلب", system: "circulatory", function: "ضخ الدم" },
+            { name: "المعدة", system: "digestive", function: "هضم الطعام" },
+            { name: "العضلة الصدرية", system: "muscular", function: "حركة الذراع" },
+            { name: "الدماغ", system: "nervous", function: "التحكم بالجسم" }
+        ];
+    }
+    return allOrgans;
+}
+
+function buildDictionaryTable() {
+    let allOrgans = loadAllOrgansForDictionary();
+    let tbody = document.querySelector('#anatomyTable tbody');
+    tbody.innerHTML = '';
+    for (let organ of allOrgans) {
+        let row = tbody.insertRow();
+        row.setAttribute('data-system', organ.system);
+        row.classList.add('clickable-row');
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        cell1.innerText = organ.name;
+        cell2.innerText = getSystemName(organ.system);
+        cell3.innerText = organ.function;
+        row.addEventListener('click', () => {
+            window.location.href = `${organ.system}.html`;
+        });
+    }
+}
+
+function getSystemName(systemId) {
+    const names = { skeletal: 'الهيكل العظمي', muscular: 'الجهاز العضلي', circulatory: 'الجهاز الدوري', digestive: 'الجهاز الهضمي', nervous: 'الجهاز العصبي' };
+    return names[systemId] || systemId;
+}
+
+buildDictionaryTable();
     
     function calculateBMI() {
         let w = parseFloat(document.getElementById('weight').value);
