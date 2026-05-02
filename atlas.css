@@ -245,3 +245,23 @@ footer {
         padding: 4px 10px;
     }
 }
+
+
+
+
+        /* --- Side Panel for Information Display --- */
+        .side-info-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 25px; padding: 25px; height: auto; min-height: 550px;
+        }
+
+        /* --- Custom Tab Pill Styling for Interactive UX --- */
+        .custom-pills .nav-link { color: #888 !important; border-radius: 12px; margin-bottom: 8px; }
+        .custom-pills .nav-link.active { background: var(--accent-cyan) !important; color: #000 !important; font-weight: bold; }
+
+        .fact-box { background: #1a1a1a; border-right: 4px solid var(--accent-cyan); padding: 15px; border-radius: 10px; margin-top: 15px; }
+        
+        /* Table Styling for readability on dark theme */
+        .table-custom { font-size: 14px; color: #ccc; }
+        .table-custom th { color: var(--accent-cyan); border-color: #333; }
+        
