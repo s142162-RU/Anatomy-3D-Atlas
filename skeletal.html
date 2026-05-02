@@ -7,55 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link rel="stylesheet" href="atlas.css">
-    <style>
-        /* تنسيق قائمة العظام داخل التبويب */
-        .bones-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 5px;
-        }
-        .bone-btn {
-            background: #1e293b;
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-        .bone-btn:hover {
-            background: var(--accent-cyan);
-            color: black;
-            border-color: var(--accent-cyan);
-        }
-        .bone-btn.read {
-            background: #2e7d64;
-            color: white;
-            border-color: #4ade80;
-        }
-        .selected-organ-card {
-            background: #1a2a3a;
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-        .notes-list {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        .note-item {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="device-common.css">
 </head>
 <body>
 
@@ -93,24 +45,25 @@
 </div>
 
 <main class="container px-lg-4 mt-4 mb-5">
-    <!-- شريط التقدم -->
+    <!-- شريط التقدم المشترك -->
     <div class="progress-container d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div class="text-info fw-bold">📊 تقدمي في الهيكل العظمي:</div>
+        <div class="text-info fw-bold">🦴 تقدمي في الهيكل العظمي:</div>
         <div class="flex-grow-1" style="min-width: 150px;"><div class="progress-bar-custom"><div class="progress-fill" id="localProgressFill"></div></div></div>
-        <div><span id="readCountDisplay">0</span> / <span id="totalBonesDisplay">0</span> عظمة</div>
+        <div><span id="readCountDisplay">0</span> / <span id="totalOrgansDisplay">0</span> عضواً</div>
         <a href="lab.html" class="btn btn-outline-info btn-sm">📋 الذهاب للمختبر</a>
         <button class="btn btn-danger btn-sm" id="resetProgressBtn">🔄 إعادة تعيين التقدم</button>
     </div>
 
     <div class="row g-4 mb-5">
+        <!-- النموذج ثلاثي الأبعاد -->
         <div class="col-lg-7">
             <div class="workspace-container shadow-lg overflow-hidden">
                 <model-viewer id="skeletalModel" src="models/skeletal.glb" camera-controls auto-rotate shadow-intensity="1" style="width:100%; height:100%;">
-                    <button class="hotspot" slot="hotspot-1" data-position="0m 1.7m 0m" data-organ="cranium" onclick="selectOrganById('cranium')"></button>
-                    <button class="hotspot" slot="hotspot-2" data-position="0.3m 1.2m 0.2m" data-organ="ribcage" onclick="selectOrganById('ribcage')"></button>
-                    <button class="hotspot" slot="hotspot-3" data-position="0m 0.6m 0.1m" data-organ="spine" onclick="selectOrganById('spine')"></button>
-                    <button class="hotspot" slot="hotspot-4" data-position="0.2m -0.3m 0.1m" data-organ="femur" onclick="selectOrganById('femur')"></button>
-                    <button class="hotspot" slot="hotspot-5" data-position="-0.2m 1.0m 0.2m" data-organ="humerus" onclick="selectOrganById('humerus')"></button>
+                    <button class="hotspot" slot="hotspot-1" data-position="0m 1.7m 0m" onclick="selectOrganById('cranium')"></button>
+                    <button class="hotspot" slot="hotspot-2" data-position="0.3m 1.2m 0.2m" onclick="selectOrganById('ribcage')"></button>
+                    <button class="hotspot" slot="hotspot-3" data-position="0m 0.6m 0.1m" onclick="selectOrganById('spine')"></button>
+                    <button class="hotspot" slot="hotspot-4" data-position="0.2m -0.3m 0.1m" onclick="selectOrganById('femur')"></button>
+                    <button class="hotspot" slot="hotspot-5" data-position="-0.2m 1.0m 0.2m" onclick="selectOrganById('humerus')"></button>
                 </model-viewer>
             </div>
             <div class="mt-3 p-3 border-start border-info border-4 bg-dark bg-opacity-50 rounded-end shadow">
@@ -119,6 +72,7 @@
             </div>
         </div>
 
+        <!-- اللوحة الجانبية -->
         <div class="col-lg-5">
             <div class="side-info-card shadow-lg d-flex flex-column">
                 <ul class="nav nav-pills nav-fill custom-pills bg-black p-1 rounded-3 border border-secondary mb-4">
@@ -126,10 +80,9 @@
                     <li class="nav-item"><button class="nav-link" onclick="switchTab('notes', this)">📝 ملاحظاتي</button></li>
                 </ul>
                 
-                <!-- تبويب المعلومات: يحتوي على قائمة العظام ومعلومات العظم المختار -->
                 <div id="info-tab" class="pane">
-                    <div class="bones-list" id="bonesListContainer"></div>
-                    <div class="selected-organ-card" id="selectedOrganCard">
+                    <div class="organs-list" id="organsListContainer"></div>
+                    <div class="selected-organ-card">
                         <h5 id="organTitle" class="text-info">الهيكل العظمي</h5>
                         <p id="organDesc" class="text-white-50 lh-lg">اختر عظمة من القائمة أعلاه أو انقر على نقطة زرقاء في النموذج لرؤية معلوماتها.</p>
                     </div>
@@ -139,7 +92,6 @@
                     </div>
                 </div>
                 
-                <!-- تبويب الملاحظات -->
                 <div id="notes-tab" class="pane" style="display:none;">
                     <h5 class="text-info mb-3">📌 ملاحظاتي على: <span id="noteOrganName">-</span></h5>
                     <textarea id="userNote" class="note-area" rows="6" placeholder="اكتب ملاحظاتك التشريحية هنا..."></textarea>
@@ -147,9 +99,8 @@
                         <button class="save-note-btn" onclick="saveCurrentNote()">💾 حفظ الملاحظة</button>
                         <button class="delete-note-btn" onclick="deleteCurrentNote()">🗑️ حذف ملاحظة هذا العضو</button>
                     </div>
-                    <div id="noteFeedback" class="small text-success mt-2"></div>
-                    
-                    <h6 class="text-info mt-4">📋 جميع ملاحظاتي (لهذا الجهاز)</h6>
+                    <div id="noteFeedback" class="small mt-2"></div>
+                    <h6 class="text-info mt-4">📋 جميع ملاحظاتي لهذا الجهاز</h6>
                     <div id="allNotesList" class="notes-list"></div>
                 </div>
             </div>
@@ -157,267 +108,26 @@
     </div>
 </main>
 
+<script src="device-common.js"></script>
 <script>
-    // --------------------- بيانات العظام (10) ---------------------
-    const BONES = [
-        { id: "cranium", name: "الجمجمة (Cranium)", details: "الجمجمة هي الهيكل العظمي للرأس، تتكون من 22 عظمة ملتحمة تحمي الدماغ والأعضاء الحسية. تتصل بالفقرات العنقية عبر اللقمتين القفَويتين." },
-        { id: "mandible", name: "الفك السفلي (Mandible)", details: "عظم الفك السفلي هو العظم الوحيد المتحرك في الجمجمة، يحمل الأسنان السفلية ويتصل بالعظم الصدغي عبر المفصل الصدغي الفكي، ويساعد في المضغ والكلام." },
-        { id: "clavicle", name: "الترقوة (Clavicle)", details: "عظم طويل منحني يربط عظم الكتف بعظم القص. يعمل كدعامة للكتف ويسهل حركات الذراع. يسهل كسره بسبب قلة سماكته." },
-        { id: "humerus", name: "عظم العضد (Humerus)", details: "أطول عظمة في الطرف العلوي، تمتد من الكتف إلى المرفق. يتصل بالكتف عبر رأس العضد، وبعظمي الكعبرة والزند." },
-        { id: "sternum", name: "القص (Sternum)", details: "عظم مسطح في منتصف الصدر، يتصل بالأضلاع عبر الغضاريف الضلعية. يتكون من ثلاثة أجزاء: قبضة القص، جسم القص، والناتئ الرهابي. يحمي القلب والرئتين." },
-        { id: "ribs", name: "الأضلاع (Ribs)", details: "12 زوجاً من الأضلاع؛ السبعة الأولى أضلاع حقيقية تتصل مباشرة بالقص، والثلاثة التالية أضلاع كاذبة، والزوجان الأخيران أضلاع طافية. تحمي التجويف الصدري." },
-        { id: "lumbar_vertebrae", name: "الفقرات القطنية (Lumbar vertebrae)", details: "خمس فقرات كبيرة في أسفل الظهر، أقوى فقرات العمود الفقري، تتحمل وزن الجسم وتسمح بحركات الانحناء والتمدد. أجسامها كلوية الشكل." },
-        { id: "ilium", name: "عظم الحرقفة (Ilium)", details: "أكبر عظام الحوض الثلاثة، يشكل الجزء العلوي من الورك. يتمفصل مع العجز خلفياً ومع عظم العانة والإسك أمامياً. يثبت عضلات الفخذ والجذع." },
-        { id: "femur", name: "عظم الفخذ (Femur)", details: "أطول وأقوى عظمة في الجسم، تمتد من الورك إلى الركبة. رأسها كروي يدخل في الحق الحرقفي. تنقل وزن الجسم من الحوض إلى أسفل الساق." },
-        { id: "patella", name: "الرضفة (Patella)", details: "عظمة سمسمية صغيرة مثلثة الشكل تقع أمام مفصل الركبة. تحمي المفصل وتزيد من ذراع العضلة الرباعية الرؤوس الفخذية لتسهيل تمديد الساق." }
+    // تعريف بيانات الجهاز (SYSTEM_ID وقائمة الأعضاء)
+    window.SYSTEM_ID = 'skeletal';
+    window.ORGANS = [
+        { id: "cranium", name: "الجمجمة", details: "الجمجمة هي الهيكل العظمي للرأس، تتكون من 22 عظمة ملتحمة تحمي الدماغ والأعضاء الحسية. تتصل بالفقرات العنقية عبر اللقمتين القفَويتين." },
+        { id: "mandible", name: "الفك السفلي", details: "عظم الفك السفلي هو العظم الوحيد المتحرك في الجمجمة، يحمل الأسنان السفلية ويتصل بالعظم الصدغي عبر المفصل الصدغي الفكي، ويساعد في المضغ والكلام." },
+        { id: "clavicle", name: "الترقوة", details: "عظم طويل منحني يربط عظم الكتف بعظم القص. يعمل كدعامة للكتف ويسهل حركات الذراع. يسهل كسره بسبب قلة سماكته." },
+        { id: "humerus", name: "عظم العضد", details: "أطول عظمة في الطرف العلوي، تمتد من الكتف إلى المرفق. يتصل بالكتف عبر رأس العضد، وبعظمي الكعبرة والزند." },
+        { id: "sternum", name: "القص", details: "عظم مسطح في منتصف الصدر، يتصل بالأضلاع عبر الغضاريف الضلعية. يتكون من ثلاثة أجزاء: قبضة القص، جسم القص، والناتئ الرهابي. يحمي القلب والرئتين." },
+        { id: "ribs", name: "الأضلاع", details: "12 زوجاً من الأضلاع؛ السبعة الأولى أضلاع حقيقية تتصل مباشرة بالقص، والثلاثة التالية أضلاع كاذبة، والزوجان الأخيران أضلاع طافية. تحمي التجويف الصدري." },
+        { id: "lumbar_vertebrae", name: "الفقرات القطنية", details: "خمس فقرات كبيرة في أسفل الظهر، أقوى فقرات العمود الفقري، تتحمل وزن الجسم وتسمح بحركات الانحناء والتمدد. أجسامها كلوية الشكل." },
+        { id: "ilium", name: "عظم الحرقفة", details: "أكبر عظام الحوض الثلاثة، يشكل الجزء العلوي من الورك. يتمفصل مع العجز خلفياً ومع عظم العانة والإسك أمامياً. يثبت عضلات الفخذ والجذع." },
+        { id: "femur", name: "عظم الفخذ", details: "أطول وأقوى عظمة في الجسم، تمتد من الورك إلى الركبة. رأسها كروي يدخل في الحق الحرقفي. تنقل وزن الجسم من الحوض إلى أسفل الساق." },
+        { id: "patella", name: "الرضفة", details: "عظمة سمسمية صغيرة مثلثة الشكل تقع أمام مفصل الركبة. تحمي المفصل وتزيد من ذراع العضلة الرباعية الرؤوس الفخذية لتسهيل تمديد الساق." }
     ];
-    const SYSTEM_ID = 'skeletal';
-    const STORAGE_KEY = `studiedOrgans_${SYSTEM_ID}`;
-    const TOTAL_KEY = `totalOrgans_${SYSTEM_ID}`;
-    const TOTAL_BONES = BONES.length;
-    localStorage.setItem(TOTAL_KEY, TOTAL_BONES);
-
-    let currentOrganId = BONES[0]?.id || null;
-
-    // ---------- التقدم ----------
-    function loadReadOrgans() {
-        let stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    }
-    function saveReadOrgans(organsArray) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(organsArray));
-        updateProgressUI();
-        updateBonesListUI();
-    }
-    function markOrganAsRead(organId) {
-        let readList = loadReadOrgans();
-        if (!readList.includes(organId)) {
-            readList.push(organId);
-            saveReadOrgans(readList);
-        }
-    }
-    function isOrganRead(organId) {
-        return loadReadOrgans().includes(organId);
-    }
-    function resetProgress() {
-        if (confirm("⚠️ هل أنت متأكد من إعادة تعيين التقدم لكل الأعضاء وحذف جميع الملاحظات الخاصة بالهيكل العظمي؟")) {
-            localStorage.removeItem(STORAGE_KEY);
-            BONES.forEach(bone => localStorage.removeItem(`note_${bone.id}`));
-            saveReadOrgans([]);
-            loadAllNotesAndRender();
-            if (currentOrganId) selectOrganById(currentOrganId);
-            document.getElementById('noteFeedback').innerHTML = "<span class='text-warning'>✓ تم إعادة التعيين</span>";
-            setTimeout(() => document.getElementById('noteFeedback').innerHTML = "", 2000);
-        }
-    }
-    function updateProgressUI() {
-        let readList = loadReadOrgans();
-        let count = readList.length;
-        let percent = (count / TOTAL_BONES) * 100;
-        let fill = document.getElementById('localProgressFill');
-        if (fill) fill.style.width = percent + "%";
-        let readSpan = document.getElementById('readCountDisplay');
-        if (readSpan) readSpan.innerText = count;
-        let totalSpan = document.getElementById('totalBonesDisplay');
-        if (totalSpan) totalSpan.innerText = TOTAL_BONES;
-    }
-
-    // بناء قائمة العظام داخل تبويب المعلومات
-    function renderBonesList() {
-        const container = document.getElementById('bonesListContainer');
-        if (!container) return;
-        container.innerHTML = '';
-        BONES.forEach(bone => {
-            const isRead = isOrganRead(bone.id);
-            const btn = document.createElement('button');
-            btn.className = `bone-btn ${isRead ? 'read' : ''}`;
-            btn.innerText = bone.name.split(' ')[0];
-            btn.onclick = () => selectOrganById(bone.id);
-            container.appendChild(btn);
-        });
-    }
-    function updateBonesListUI() {
-        const btns = document.querySelectorAll('.bone-btn');
-        btns.forEach(btn => {
-            // معرفة العظم من النص (طريقة بسيطة)
-            const boneName = btn.innerText;
-            const bone = BONES.find(b => b.name.startsWith(boneName));
-            if (bone && isOrganRead(bone.id)) {
-                btn.classList.add('read');
-            } else if (bone) {
-                btn.classList.remove('read');
-            }
-        });
-    }
-
-    // عرض معلومات العظم المختار
-    function selectOrganById(organId) {
-        let bone = BONES.find(b => b.id === organId);
-        if (!bone) return;
-        currentOrganId = bone.id;
-        document.getElementById('organTitle').innerText = bone.name;
-        document.getElementById('organDesc').innerHTML = bone.details;
-        markOrganAsRead(organId);
-        loadNoteForCurrent();
-        // التأكد من أن تبويب المعلومات نشط (في حال النقر من خارج التبويب)
-        const infoTabBtn = document.querySelector('.custom-pills .nav-link.active');
-        if (infoTabBtn && infoTabBtn.innerText.includes('معلومات') === false) {
-            document.querySelectorAll('.custom-pills .nav-link')[0].click();
-        }
-    }
-
-    // ---------- نظام الملاحظات (مع PHP) ----------
-    const API_BASE = "api/";
-    async function saveNoteToServer(organId, noteText) {
-        try {
-            const response = await fetch(API_BASE + "save_note.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ system: SYSTEM_ID, organ_id: organId, note: noteText })
-            });
-            const data = await response.json();
-            if (data.success) {
-                localStorage.setItem(`note_${organId}`, noteText);
-                return true;
-            } else return false;
-        } catch (err) {
-            console.warn("PHP غير متاح، يتم الحفظ محلياً فقط", err);
-            localStorage.setItem(`note_${organId}`, noteText);
-            return true;
-        }
-    }
-    async function deleteNoteFromServer(organId) {
-        try {
-            const response = await fetch(API_BASE + "delete_note.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ system: SYSTEM_ID, organ_id: organId })
-            });
-            const data = await response.json();
-            if (data.success) {
-                localStorage.removeItem(`note_${organId}`);
-                return true;
-            } else return false;
-        } catch (err) {
-            console.warn("PHP غير متاح، يتم الحذف محلياً", err);
-            localStorage.removeItem(`note_${organId}`);
-            return true;
-        }
-    }
-    async function fetchAllNotesFromServer() {
-        try {
-            const response = await fetch(API_BASE + "get_notes.php?system=" + SYSTEM_ID);
-            const data = await response.json();
-            if (data.success && data.notes) {
-                for (let note of data.notes) {
-                    localStorage.setItem(`note_${note.organ_id}`, note.note_text);
-                }
-                return data.notes;
-            }
-        } catch (err) {}
-        let notes = [];
-        for (let bone of BONES) {
-            let txt = localStorage.getItem(`note_${bone.id}`);
-            if (txt && txt.trim()) notes.push({ organ_id: bone.id, organ_name: bone.name.split(' ')[0], note_text: txt });
-        }
-        return notes;
-    }
-    async function loadAllNotesAndRender() {
-        let notes = await fetchAllNotesFromServer();
-        const container = document.getElementById('allNotesList');
-        if (!container) return;
-        if (notes.length === 0) {
-            container.innerHTML = '<p class="text-secondary small">لا توجد ملاحظات مسجلة بعد.</p>';
-            return;
-        }
-        container.innerHTML = '';
-        for (let note of notes) {
-            let div = document.createElement('div');
-            div.className = 'note-item';
-            div.innerHTML = `
-                <div class="d-flex justify-content-between">
-                    <strong>🔹 ${note.organ_name}</strong>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSpecificNote('${note.organ_id}')">🗑️</button>
-                </div>
-                <p class="small mb-0 mt-1">${note.note_text.substring(0, 100)}${note.note_text.length > 100 ? '...' : ''}</p>
-                <button class="btn btn-sm btn-outline-info mt-1" onclick="editNote('${note.organ_id}')">✏️ تعديل</button>
-            `;
-            container.appendChild(div);
-        }
-    }
-    async function saveCurrentNote() {
-        if (!currentOrganId) return;
-        let noteText = document.getElementById('userNote').value;
-        if (noteText.trim() === "") {
-            document.getElementById('noteFeedback').innerHTML = "<span class='text-danger'>⚠️ لا يمكن حفظ ملاحظة فارغة</span>";
-            return;
-        }
-        let success = await saveNoteToServer(currentOrganId, noteText);
-        if (success) {
-            document.getElementById('noteFeedback').innerHTML = "<span class='text-success'>✓ تم حفظ الملاحظة</span>";
-            setTimeout(() => document.getElementById('noteFeedback').innerHTML = "", 2000);
-            await loadAllNotesAndRender();
-        } else {
-            document.getElementById('noteFeedback').innerHTML = "<span class='text-danger'>❌ فشل الحفظ</span>";
-        }
-    }
-    async function deleteCurrentNote() {
-        if (!currentOrganId) return;
-        if (!confirm("هل أنت متأكد من حذف ملاحظة هذا العضو؟")) return;
-        await deleteNoteFromServer(currentOrganId);
-        document.getElementById('userNote').value = "";
-        document.getElementById('noteFeedback').innerHTML = "<span class='text-info'>✓ تم حذف الملاحظة</span>";
-        setTimeout(() => document.getElementById('noteFeedback').innerHTML = "", 2000);
-        await loadAllNotesAndRender();
-    }
-    async function deleteSpecificNote(organId) {
-        if (!confirm("حذف ملاحظة هذا العضو؟")) return;
-        await deleteNoteFromServer(organId);
-        if (currentOrganId === organId) document.getElementById('userNote').value = "";
-        await loadAllNotesAndRender();
-        document.getElementById('noteFeedback').innerHTML = "<span class='text-info'>✓ تم الحذف</span>";
-        setTimeout(() => document.getElementById('noteFeedback').innerHTML = "", 1500);
-    }
-    async function editNote(organId) {
-        let noteText = localStorage.getItem(`note_${organId}`) || "";
-        document.getElementById('userNote').value = noteText;
-        let bone = BONES.find(b => b.id === organId);
-        if (bone) {
-            document.getElementById('noteOrganName').innerText = bone.name.split(' ')[0];
-            currentOrganId = organId;
-        }
-        let notesTabBtn = document.querySelectorAll('.custom-pills .nav-link')[1];
-        notesTabBtn.click();
-    }
-    function loadNoteForCurrent() {
-        if (currentOrganId) {
-            let note = localStorage.getItem(`note_${currentOrganId}`) || "";
-            document.getElementById('userNote').value = note;
-            let bone = BONES.find(b => b.id === currentOrganId);
-            document.getElementById('noteOrganName').innerText = bone ? bone.name.split(' ')[0] : currentOrganId;
-        }
-    }
-
-    // التبويب
-    function switchTab(tabId, el) {
-        document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
-        document.querySelectorAll('.custom-pills .nav-link').forEach(t => t.classList.remove('active'));
-        document.getElementById(tabId + '-tab').style.display = 'block';
-        el.classList.add('active');
-        if (tabId === 'notes') {
-            loadNoteForCurrent();
-            loadAllNotesAndRender();
-        }
-    }
-
-    // ربط الأزرار
-    document.getElementById('resetProgressBtn')?.addEventListener('click', resetProgress);
+    window.currentOrganId = null;
     
-    // التهيئة
-    renderBonesList();
-    updateProgressUI();
-    if (BONES.length) selectOrganById(BONES[0].id);
-    loadAllNotesAndRender();
+    // تهيئة الصفحة (المعالجة مشتركة من device-common.js)
+    initDevicePage();
 </script>
 
 <footer class="text-center text-secondary py-5 border-top">
@@ -425,5 +135,3 @@
 </footer>
 </body>
 </html>
-
-
