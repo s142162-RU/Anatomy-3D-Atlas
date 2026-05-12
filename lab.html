@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             gap: 15px;
             margin-top: 20px;
         }
+
         .pagination-btn {
             background: #1e293b;
             border: none;
@@ -23,255 +25,272 @@
             color: white;
             transition: 0.2s;
         }
+
         .pagination-btn:hover {
             background: var(--accent-cyan);
             color: black;
         }
+
         .pagination-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
         .page-info {
             color: #cbd5e1;
         }
+
         .clickable-row {
             cursor: pointer;
             transition: 0.2s;
         }
+
         .clickable-row:hover {
             background-color: #1e293b;
         }
     </style>
 </head>
+
 <body>
 
-<div class="header-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-dark container">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="Logo.png" alt="Logo" class="me-2"> 
-                <span class="fw-bold">ANATOMY ATLAS</span>
+   <div class="header-wrapper">
+        <div class="header">
+            <div class="navbar right-nav">
+                <a href="index.html">الرئيسية</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">الأطلس الحيوي</a>
+                    <div class="dropdown-content">
+                        <a href="skeletal.html">الهيكل العظمي</a>
+                        <a href="muscular.html">الجهاز العضلي</a>
+                        <a href="circulatory.html">الجهاز الدوري</a>
+                        <a href="digestive.html">الجهاز الهضمي</a>
+                        <a href="nervous.html">الجهاز العصبي</a>
+                    </div>
+                </div>
+                <a href="lab.html">مختبر دراسي</a>
+                <a href="questionnaire.html">استبيان</a>
+                <a href="funpage.html">لعبة الذاكرة</a>
+                <a href="manage_users.php">إدارة المستخدمين</a>
+                
+            </div>
+
+            <a href="index.html" class="logo-img-link">
+                <img src="Logo.png" class="logo-img" alt="logo">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav mx-auto text-uppercase">
-                    <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">الأطلس الحيوي</a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="skeletal.html">الهيكل العظمي</a></li>
-                            <li><a class="dropdown-item" href="muscular.html">الجهاز العضلي</a></li>
-                            <li><a class="dropdown-item" href="circulatory.html">الجهاز الدوري</a></li>
-                            <li><a class="dropdown-item" href="digestive.html">الجهاز الهضمي</a></li>
-                            <li><a class="dropdown-item" href="nervous.html">الجهاز العصبي</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link active text-info" href="lab.html">مختبر دراسي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="questionnaire.html">استبيان</a></li>
-                    <li class="nav-item"><a class="nav-link" href="funpage.html">لعبة الذاكرة</a></li>
-                </ul>
-                <div class="d-flex"><a href="login.html" class="nav-link login-btn">تسجيل الدخول</a></div>
-            </div>
-        </div>
-    </nav>
-</div>
 
-<main class="container py-4">
-    <!-- قسم قاموس الأجزاء التشريحية + BMI -->
-    <div class="row g-4 mb-5">
-        <div class="col-lg-7">
-            <div class="lab-card shadow">
-                <h3 class="text-info mb-4">📖 قاموس الأجزاء التشريحية</h3>
-                <input type="text" id="anatomySearch" class="form-control bg-dark text-white border-secondary mb-3" placeholder="ابحث عن عضو..." onkeyup="filterTable()">
-                <div class="table-responsive">
-                    <table class="table table-dark table-hover" id="anatomyTable">
-                        <thead>
-                            <tr><th>العضو</th><th>الجهاز</th><th>الوظيفة</th></tr>
-                        </thead>
-                        <tbody id="dictionaryTableBody">
-                            <!-- سيتم تعبئته ديناميكياً -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- شريط التنقل (Pagination) -->
-                <div class="pagination-container" id="paginationControls" style="display: none;">
-                    <button class="pagination-btn" id="prevPageBtn">« السابق</button>
-                    <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
-                    <button class="pagination-btn" id="nextPageBtn">التالي »</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-5">
-            <div class="lab-card shadow">
-                <h3 class="text-info mb-4">⚖️ حاسبة BMI</h3>
-                <div class="mb-3"><label class="form-label small">الوزن (كجم)</label><input type="number" id="weight" class="form-control bg-dark text-white"></div>
-                <div class="mb-3"><label class="form-label small">الطول (سم)</label><input type="number" id="height" class="form-control bg-dark text-white"></div>
-                <button class="btn btn-info w-100 fw-bold rounded-pill" onclick="calculateBMI()">احسب</button>
-                <div id="bmiResult" class="calc-result"><h5>النتيجة: <span id="bmiValue"></span></h5><p id="bmiStatus"></p></div>
+            <div class="navbar left-nav">
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل معنا</a>
+                <a href="login.html" class="login-btn-header">تسجيل الدخول</a>
             </div>
         </div>
     </div>
 
-    <!-- لوحة تقدم الأجهزة -->
-    <h3 class="text-info mb-4">📊 تقدمي في أجهزة الجسم</h3>
-    <div class="row g-4" id="systemsProgressContainer"></div>
-</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // --------------------- تعريف الأجهزة ---------------------
-    const SYSTEMS = [
-        { id: 'skeletal', name: 'الهيكل العظمي', page: 'skeletal.html' },
-        { id: 'muscular', name: 'الجهاز العضلي', page: 'muscular.html' },
-        { id: 'circulatory', name: 'الجهاز الدوري', page: 'circulatory.html' },
-        { id: 'digestive', name: 'الجهاز الهضمي', page: 'digestive.html' },
-        { id: 'nervous', name: 'الجهاز العصبي', page: 'nervous.html' }
-    ];
+    <main class="container py-4">
+        <!-- قسم قاموس الأجزاء التشريحية + BMI -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-7">
+                <div class="lab-card shadow">
+                    <h3 class="text-info mb-4">📖 قاموس الأجزاء التشريحية</h3>
+                    <input type="text" id="anatomySearch" class="form-control bg-dark text-white border-secondary mb-3"
+                        placeholder="ابحث عن عضو..." onkeyup="filterTable()">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover" id="anatomyTable">
+                            <thead>
+                                <tr>
+                                    <th>العضو</th>
+                                    <th>الجهاز</th>
+                                    <th>الوظيفة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dictionaryTableBody">
+                                <!-- سيتم تعبئته ديناميكياً -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- شريط التنقل (Pagination) -->
+                    <div class="pagination-container" id="paginationControls" style="display: none;">
+                        <button class="pagination-btn" id="prevPageBtn">« السابق</button>
+                        <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
+                        <button class="pagination-btn" id="nextPageBtn">التالي »</button>
+                    </div>
+                </div>
+            </div>
 
-    // أسماء الأعضاء العربية (للملاحظات - قد لا تحتاج هنا لكن للتوافق)
-    const organNames = {
-        // يمكن تركه فارغاً لأنه لا يستخدم بشكل مباشر في lab
-    };
+            <div class="col-lg-5">
+                <div class="lab-card shadow">
+                    <h3 class="text-info mb-4">⚖️ حاسبة BMI</h3>
+                    <div class="mb-3"><label class="form-label small">الوزن (كجم)</label><input type="number"
+                            id="weight" class="form-control bg-dark text-white"></div>
+                    <div class="mb-3"><label class="form-label small">الطول (سم)</label><input type="number" id="height"
+                            class="form-control bg-dark text-white"></div>
+                    <button class="btn btn-info w-100 fw-bold rounded-pill" onclick="calculateBMI()">احسب</button>
+                    <div id="bmiResult" class="calc-result">
+                        <h5>النتيجة: <span id="bmiValue"></span></h5>
+                        <p id="bmiStatus"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // --------------------- جمع كل الأعضاء من جميع الأجهزة ---------------------
-    let allOrgansArray = [];      // مصفوفة كل الأعضاء (الكاملة)
-    let currentDisplayList = [];  // القائمة المعروضة حالياً (بعد الفلترة)
-    let currentPage = 1;
-    const itemsPerPage = 5;
+        <!-- لوحة تقدم الأجهزة -->
+        <h3 class="text-info mb-4">📊 تقدمي في أجهزة الجسم</h3>
+        <div class="row g-4" id="systemsProgressContainer"></div>
+    </main>
 
-    // تحميل قوائم الأعضاء من localStorage (يتم تخزينها تلقائياً عند زيارة كل جهاز)
-    function loadAllOrgansFromStorage() {
-        let combined = [];
-        for (let sys of SYSTEMS) {
-            let key = `organsList_${sys.id}`;
-            let stored = localStorage.getItem(key);
-            if (stored) {
-                let organs = JSON.parse(stored);
-                for (let organ of organs) {
-                    combined.push({
-                        name: organ.name,
-                        system: sys.id,
-                        systemName: sys.name,
-                        function: (organ.details || "").substring(0, 100) + ((organ.details || "").length > 100 ? "..." : "")
-                    });
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --------------------- تعريف الأجهزة ---------------------
+        const SYSTEMS = [
+            { id: 'skeletal', name: 'الهيكل العظمي', page: 'skeletal.html' },
+            { id: 'muscular', name: 'الجهاز العضلي', page: 'muscular.html' },
+            { id: 'circulatory', name: 'الجهاز الدوري', page: 'circulatory.html' },
+            { id: 'digestive', name: 'الجهاز الهضمي', page: 'digestive.html' },
+            { id: 'nervous', name: 'الجهاز العصبي', page: 'nervous.html' }
+        ];
+
+        // أسماء الأعضاء العربية (للملاحظات - قد لا تحتاج هنا لكن للتوافق)
+        const organNames = {
+            // يمكن تركه فارغاً لأنه لا يستخدم بشكل مباشر في lab
+        };
+
+        // --------------------- جمع كل الأعضاء من جميع الأجهزة ---------------------
+        let allOrgansArray = [];      // مصفوفة كل الأعضاء (الكاملة)
+        let currentDisplayList = [];  // القائمة المعروضة حالياً (بعد الفلترة)
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        // تحميل قوائم الأعضاء من localStorage (يتم تخزينها تلقائياً عند زيارة كل جهاز)
+        function loadAllOrgansFromStorage() {
+            let combined = [];
+            for (let sys of SYSTEMS) {
+                let key = `organsList_${sys.id}`;
+                let stored = localStorage.getItem(key);
+                if (stored) {
+                    let organs = JSON.parse(stored);
+                    for (let organ of organs) {
+                        combined.push({
+                            name: organ.name,
+                            system: sys.id,
+                            systemName: sys.name,
+                            function: (organ.details || "").substring(0, 100) + ((organ.details || "").length > 100 ? "..." : "")
+                        });
+                    }
                 }
             }
+            // إذا لم يتم العثور على أي أعضاء (لأول مرة)، نستخدم بيانات افتراضية محدودة
+            if (combined.length === 0) {
+                combined = [
+                    { name: "الجمجمة", system: "skeletal", systemName: "الهيكل العظمي", function: "حماية الدماغ" },
+                    { name: "القلب", system: "circulatory", systemName: "الجهاز الدوري", function: "ضخ الدم" },
+                    { name: "المعدة", system: "digestive", systemName: "الجهاز الهضمي", function: "هضم الطعام" },
+                    { name: "العضلة الصدرية", system: "muscular", systemName: "الجهاز العضلي", function: "حركة الذراع" },
+                    { name: "الدماغ", system: "nervous", systemName: "الجهاز العصبي", function: "التحكم بالجسم" }
+                ];
+            }
+            return combined;
         }
-        // إذا لم يتم العثور على أي أعضاء (لأول مرة)، نستخدم بيانات افتراضية محدودة
-        if (combined.length === 0) {
-            combined = [
-                { name: "الجمجمة", system: "skeletal", systemName: "الهيكل العظمي", function: "حماية الدماغ" },
-                { name: "القلب", system: "circulatory", systemName: "الجهاز الدوري", function: "ضخ الدم" },
-                { name: "المعدة", system: "digestive", systemName: "الجهاز الهضمي", function: "هضم الطعام" },
-                { name: "العضلة الصدرية", system: "muscular", systemName: "الجهاز العضلي", function: "حركة الذراع" },
-                { name: "الدماغ", system: "nervous", systemName: "الجهاز العصبي", function: "التحكم بالجسم" }
-            ];
-        }
-        return combined;
-    }
 
-    // بناء الجدول للصفحة الحالية
-    function renderDictionaryTable() {
-        const tbody = document.getElementById('dictionaryTableBody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const pageData = currentDisplayList.slice(start, end);
-        
-        for (let item of pageData) {
-            const row = tbody.insertRow();
-            row.classList.add('clickable-row');
-            row.setAttribute('data-system', item.system);
-            row.addEventListener('click', () => {
-                window.location.href = `${item.system}.html`;
-            });
-            const cell1 = row.insertCell(0);
-            const cell2 = row.insertCell(1);
-            const cell3 = row.insertCell(2);
-            cell1.innerText = item.name;
-            cell2.innerText = item.systemName;
-            cell3.innerText = item.function;
-        }
-        
-        // تحديث أزرار التنقل
-        const totalPages = Math.ceil(currentDisplayList.length / itemsPerPage);
-        const pageInfo = document.getElementById('pageInfo');
-        const prevBtn = document.getElementById('prevPageBtn');
-        const nextBtn = document.getElementById('nextPageBtn');
-        const paginationDiv = document.getElementById('paginationControls');
-        
-        if (totalPages <= 1) {
-            paginationDiv.style.display = 'none';
-        } else {
-            paginationDiv.style.display = 'flex';
-            pageInfo.innerText = `صفحة ${currentPage} من ${totalPages}`;
-            prevBtn.disabled = (currentPage === 1);
-            nextBtn.disabled = (currentPage === totalPages);
-        }
-    }
+        // بناء الجدول للصفحة الحالية
+        function renderDictionaryTable() {
+            const tbody = document.getElementById('dictionaryTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = currentDisplayList.slice(start, end);
 
-    // فلترة البيانات بناءً على نص البحث
-    function filterDictionary() {
-        const searchText = document.getElementById('anatomySearch').value.toLowerCase();
-        if (searchText.trim() === "") {
-            currentDisplayList = [...allOrgansArray];
-        } else {
-            currentDisplayList = allOrgansArray.filter(item => 
-                item.name.toLowerCase().includes(searchText) ||
-                item.systemName.toLowerCase().includes(searchText) ||
-                item.function.toLowerCase().includes(searchText)
-            );
-        }
-        currentPage = 1;
-        renderDictionaryTable();
-    }
+            for (let item of pageData) {
+                const row = tbody.insertRow();
+                row.classList.add('clickable-row');
+                row.setAttribute('data-system', item.system);
+                row.addEventListener('click', () => {
+                    window.location.href = `${item.system}.html`;
+                });
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                cell1.innerText = item.name;
+                cell2.innerText = item.systemName;
+                cell3.innerText = item.function;
+            }
 
-    // دوال التنقل بين الصفحات
-    function nextPage() {
-        const totalPages = Math.ceil(currentDisplayList.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
+            // تحديث أزرار التنقل
+            const totalPages = Math.ceil(currentDisplayList.length / itemsPerPage);
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const paginationDiv = document.getElementById('paginationControls');
+
+            if (totalPages <= 1) {
+                paginationDiv.style.display = 'none';
+            } else {
+                paginationDiv.style.display = 'flex';
+                pageInfo.innerText = `صفحة ${currentPage} من ${totalPages}`;
+                prevBtn.disabled = (currentPage === 1);
+                nextBtn.disabled = (currentPage === totalPages);
+            }
+        }
+
+        // فلترة البيانات بناءً على نص البحث
+        function filterDictionary() {
+            const searchText = document.getElementById('anatomySearch').value.toLowerCase();
+            if (searchText.trim() === "") {
+                currentDisplayList = [...allOrgansArray];
+            } else {
+                currentDisplayList = allOrgansArray.filter(item =>
+                    item.name.toLowerCase().includes(searchText) ||
+                    item.systemName.toLowerCase().includes(searchText) ||
+                    item.function.toLowerCase().includes(searchText)
+                );
+            }
+            currentPage = 1;
             renderDictionaryTable();
         }
-    }
-    function prevPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            renderDictionaryTable();
+
+        // دوال التنقل بين الصفحات
+        function nextPage() {
+            const totalPages = Math.ceil(currentDisplayList.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderDictionaryTable();
+            }
         }
-    }
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderDictionaryTable();
+            }
+        }
 
-    // --------------------- دوال التقدم في الأجهزة ---------------------
-    function getStudiedOrgans(systemId) {
-        let key = `studiedOrgans_${systemId}`;
-        let stored = localStorage.getItem(key);
-        return stored ? JSON.parse(stored) : [];
-    }
+        // --------------------- دوال التقدم في الأجهزة ---------------------
+        function getStudiedOrgans(systemId) {
+            let key = `studiedOrgans_${systemId}`;
+            let stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : [];
+        }
 
-    function getTotalOrgans(systemId) {
-        let key = `totalOrgans_${systemId}`;
-        let stored = localStorage.getItem(key);
-        if (stored) return parseInt(stored);
-        const defaults = { skeletal: 10, muscular: 6, circulatory: 6, digestive: 7, nervous: 6 };
-        return defaults[systemId] || 3;
-    }
+        function getTotalOrgans(systemId) {
+            let key = `totalOrgans_${systemId}`;
+            let stored = localStorage.getItem(key);
+            if (stored) return parseInt(stored);
+            const defaults = { skeletal: 10, muscular: 6, circulatory: 6, digestive: 7, nervous: 6 };
+            return defaults[systemId] || 3;
+        }
 
-    function renderProgressCards() {
-        const container = document.getElementById('systemsProgressContainer');
-        if (!container) return;
-        container.innerHTML = '';
-        for (let sys of SYSTEMS) {
-            let total = getTotalOrgans(sys.id);
-            let studied = getStudiedOrgans(sys.id);
-            let completedCount = studied.length;
-            let percent = total > 0 ? (completedCount / total) * 100 : 0;
-            let card = document.createElement('div');
-            card.className = 'col-md-6 col-lg-4';
-            card.innerHTML = `
+        function renderProgressCards() {
+            const container = document.getElementById('systemsProgressContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let sys of SYSTEMS) {
+                let total = getTotalOrgans(sys.id);
+                let studied = getStudiedOrgans(sys.id);
+                let completedCount = studied.length;
+                let percent = total > 0 ? (completedCount / total) * 100 : 0;
+                let card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4';
+                card.innerHTML = `
                 <div class="system-card">
                     <div class="system-title">${sys.name}</div>
                     <div class="progress-bar-container"><div class="progress-fill" style="width:${percent}%"></div></div>
@@ -282,60 +301,61 @@
                     </div>
                 </div>
             `;
-            container.appendChild(card);
+                container.appendChild(card);
+            }
         }
-    }
 
-    // دوال التصدير والاختبارات (يمكن الاحتفاظ بها من الكود القديم)
-    function exportSystemPDF(systemId) {
-        alert(`سيتم تفعيل تصدير PDF للجهاز ${systemId} قريباً. حالياً يمكنك استخدام زر الطباعة في المتصفح.`);
-    }
-    function goToQuiz(systemId) {
-        window.location.href = `quiz-setup.html?system=${systemId}`;
-    }
+        // دوال التصدير والاختبارات (يمكن الاحتفاظ بها من الكود القديم)
+        function exportSystemPDF(systemId) {
+            alert(`سيتم تفعيل تصدير PDF للجهاز ${systemId} قريباً. حالياً يمكنك استخدام زر الطباعة في المتصفح.`);
+        }
+        function goToQuiz(systemId) {
+            window.location.href = `demo-quiz.html?system=${systemId}`;
+        }
 
-    // دالة BMI
-    function calculateBMI() {
-        let w = parseFloat(document.getElementById('weight').value);
-        let h = parseFloat(document.getElementById('height').value) / 100;
-        if (w > 0 && h > 0) {
-            let bmi = (w / (h * h)).toFixed(1);
-            document.getElementById('bmiValue').innerText = bmi;
-            let status = "";
-            if (bmi < 18.5) status = "نقص وزن";
-            else if (bmi < 25) status = "وزن طبيعي";
-            else if (bmi < 30) status = "زيادة وزن";
-            else status = "سمنة";
-            document.getElementById('bmiStatus').innerText = status;
-            document.getElementById('bmiResult').style.display = "block";
-        } else alert("أدخل قيماً صحيحة");
-    }
+        // دالة BMI
+        function calculateBMI() {
+            let w = parseFloat(document.getElementById('weight').value);
+            let h = parseFloat(document.getElementById('height').value) / 100;
+            if (w > 0 && h > 0) {
+                let bmi = (w / (h * h)).toFixed(1);
+                document.getElementById('bmiValue').innerText = bmi;
+                let status = "";
+                if (bmi < 18.5) status = "نقص وزن";
+                else if (bmi < 25) status = "وزن طبيعي";
+                else if (bmi < 30) status = "زيادة وزن";
+                else status = "سمنة";
+                document.getElementById('bmiStatus').innerText = status;
+                document.getElementById('bmiResult').style.display = "block";
+            } else alert("أدخل قيماً صحيحة");
+        }
 
-    // ربط الأزرار والتهيئة
-    window.filterTable = filterDictionary;
-    window.calculateBMI = calculateBMI;
-    window.exportSystemPDF = exportSystemPDF;
-    window.goToQuiz = goToQuiz;
-    
-    document.getElementById('prevPageBtn')?.addEventListener('click', prevPage);
-    document.getElementById('nextPageBtn')?.addEventListener('click', nextPage);
-    document.getElementById('anatomySearch')?.addEventListener('keyup', filterDictionary);
-    
-    // تحميل البيانات وبدء التشغيل
-    allOrgansArray = loadAllOrgansFromStorage();
-    currentDisplayList = [...allOrgansArray];
-    currentPage = 1;
-    renderDictionaryTable();
-    renderProgressCards();
-    
-    // تحديث التقدم كل 3 ثواني لاستقبال التغييرات من صفحات الأجهزة
-    setInterval(() => {
+        // ربط الأزرار والتهيئة
+        window.filterTable = filterDictionary;
+        window.calculateBMI = calculateBMI;
+        window.exportSystemPDF = exportSystemPDF;
+        window.goToQuiz = goToQuiz;
+
+        document.getElementById('prevPageBtn')?.addEventListener('click', prevPage);
+        document.getElementById('nextPageBtn')?.addEventListener('click', nextPage);
+        document.getElementById('anatomySearch')?.addEventListener('keyup', filterDictionary);
+
+        // تحميل البيانات وبدء التشغيل
+        allOrgansArray = loadAllOrgansFromStorage();
+        currentDisplayList = [...allOrgansArray];
+        currentPage = 1;
+        renderDictionaryTable();
         renderProgressCards();
-    }, 3000);
-</script>
 
-<footer class="text-center text-secondary py-5 border-top">
-    <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
-</footer>
+        // تحديث التقدم كل 3 ثواني لاستقبال التغييرات من صفحات الأجهزة
+        setInterval(() => {
+            renderProgressCards();
+        }, 3000);
+    </script>
+
+    <footer class="text-center text-secondary py-5 border-top">
+        <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
+    </footer>
 </body>
+
 </html>

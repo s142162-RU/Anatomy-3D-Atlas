@@ -10,38 +10,39 @@
 </head>
 <body>
 
-<div class="header-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-dark container">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="Logo.png" alt="Logo" class="me-2"> 
-                <span class="fw-bold">ANATOMY ATLAS</span>
+   <div class="header-wrapper">
+        <div class="header">
+            <div class="navbar right-nav">
+                <a href="index.html">الرئيسية</a>
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">الأطلس الحيوي</a>
+                    <div class="dropdown-content">
+                        <a href="skeletal.html">الهيكل العظمي</a>
+                        <a href="muscular.html">الجهاز العضلي</a>
+                        <a href="circulatory.html">الجهاز الدوري</a>
+                        <a href="digestive.html">الجهاز الهضمي</a>
+                        <a href="nervous.html">الجهاز العصبي</a>
+                    </div>
+                </div>
+                <a href="lab.html">مختبر دراسي</a>
+                <a href="questionnaire.html">استبيان</a>
+                <a href="funpage.html">لعبة الذاكرة</a>
+                <a href="manage_users.php">إدارة المستخدمين</a>
+                
+            </div>
+
+            <a href="index.html" class="logo-img-link">
+                <img src="Logo.png" class="logo-img" alt="logo">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav mx-auto text-uppercase">
-                    <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-info" href="#" data-bs-toggle="dropdown">الأطلس الحيوي</a>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="skeletal.html">الهيكل العظمي</a></li>
-                            <li><a class="dropdown-item" href="muscular.html">الجهاز العضلي</a></li>
-                            <li><a class="dropdown-item" href="circulatory.html">الجهاز الدوري</a></li>
-                            <li><a class="dropdown-item" href="digestive.html">الجهاز الهضمي</a></li>
-                            <li><a class="dropdown-item" href="nervous.html">الجهاز العصبي</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="lab.html">مختبر دراسي</a></li>
-                    <li class="nav-item"><a class="nav-link" href="questionnaire.html">استبيان</a></li>
-                    <li class="nav-item"><a class="nav-link" href="funpage.html">لعبة الذاكرة</a></li>
-                </ul>
-                <div class="d-flex"><a href="login.html" class="nav-link login-btn">تسجيل الدخول</a></div>
+
+            <div class="navbar left-nav">
+                <a href="about.html">من نحن</a>
+                <a href="contact.html">تواصل معنا</a>
+                <a href="login.html" class="login-btn-header">تسجيل الدخول</a>
             </div>
         </div>
-    </nav>
-</div>
+    </div>
+
 
 <main class="container px-lg-4 mt-4 mb-5">
     <!-- شريط التقدم -->
@@ -56,14 +57,7 @@
     <div class="row g-4 mb-5">
         <div class="col-lg-7">
             <div class="workspace-container shadow-lg overflow-hidden">
-                <model-viewer src="models/muscular.glb" camera-controls auto-rotate shadow-intensity="1" style="width:100%; height:100%;">
-                    <button class="hotspot" slot="hotspot-pectoralis" data-position="0.2m 1.4m 0.1m" onclick="selectOrganById('pectoralis')"></button>
-                    <button class="hotspot" slot="hotspot-biceps" data-position="0.25m 1.0m 0.15m" onclick="selectOrganById('biceps')"></button>
-                    <button class="hotspot" slot="hotspot-triceps" data-position="-0.25m 1.0m 0.15m" onclick="selectOrganById('triceps')"></button>
-                    <button class="hotspot" slot="hotspot-quadriceps" data-position="0.15m 0.3m 0.1m" onclick="selectOrganById('quadriceps')"></button>
-                    <button class="hotspot" slot="hotspot-hamstrings" data-position="-0.15m 0.3m 0.1m" onclick="selectOrganById('hamstrings')"></button>
-                    <button class="hotspot" slot="hotspot-deltoid" data-position="0.25m 1.4m 0.2m" onclick="selectOrganById('deltoid')"></button>
-                </model-viewer>
+                <model-viewer id="muscularModel" src="models/myology.glb" camera-controls auto-rotate shadow-intensity="1" style="width:100%; height:100%;"></model-viewer>
             </div>
             <div class="mt-3 p-3 border-start border-info border-4 bg-dark bg-opacity-50 rounded-end shadow">
                 <h5 class="text-info mb-1">💪 الجهاز العضلي التفاعلي</h5>

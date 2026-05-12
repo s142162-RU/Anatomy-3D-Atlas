@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار توضيحي | Anatomy Atlas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="atlas.css">
+    <style>
+        .quiz-demo-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .question-text {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .option-label {
+            display: block;
+            background: #0f172a;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-label:hover {
+            background: #1e293b;
+        }
+
+        .option-input {
+            margin-left: 12px;
+        }
+
+        .badge-demo {
+            background: var(--accent-cyan);
+            color: black;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+
+        .demo-note {
+            background: #2d1f00;
+            border-right: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="index.html">
+                    <img src="Logo.png" alt="Logo" class="me-2">
+                    <span class="fw-bold">ANATOMY ATLAS</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav mx-auto text-uppercase">
+                        <li class="nav-item"><a class="nav-link" href="index.html">الرئيسية</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">الأطلس الحيوي</a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="skeletal.html">الهيكل العظمي</a></li>
+                                <li><a class="dropdown-item" href="muscular.html">الجهاز العضلي</a></li>
+                                <li><a class="dropdown-item" href="circulatory.html">الجهاز الدوري</a></li>
+                                <li><a class="dropdown-item" href="digestive.html">الجهاز الهضمي</a></li>
+                                <li><a class="dropdown-item" href="nervous.html">الجهاز العصبي</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="lab.html">مختبر دراسي</a></li>
+                        <li class="nav-item"><a class="nav-link" href="questionnaire.html">استبيان</a></li>
+                        <li class="nav-item"><a class="nav-link" href="funpage.html">لعبة الذاكرة</a></li>
+                    </ul>
+                    <div class="d-flex"><a href="login.html" class="nav-link login-btn">تسجيل الدخول</a></div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container py-5">
+        <div class="quiz-demo-card shadow">
+            <!-- إشعار توضيحي -->
+            <div class="demo-note text-center">
+                <span class="badge-demo mb-2 d-inline-block">🧪 اختبار توضيحي</span>
+                <p class="mt-2 mb-0 text-warning">⚠️ هذا اختبار افتراضي للتوضيح فقط. في النسخة الكاملة، سيتم دمج الذكاء
+                    الاصطناعي (Gemini API) لإنشاء أسئلة ديناميكية حسب العضو المختار.</p>
+            </div>
+
+            <h2 class="text-info text-center mb-4">📝 اختبار الجهاز <span id="systemNameDisplay">التشريحي</span></h2>
+
+            <div class="question-text">
+                <h5 class="text-info">السؤال 1:</h5>
+                <p class="mb-3">ما هي الوظيفة الرئيسية للقلب؟</p>
+                <label class="option-label"><input type="radio" name="q1" class="option-input" value="a"> أ) هضم
+                    الطعام</label>
+                <label class="option-label"><input type="radio" name="q1" class="option-input" value="b"> ب) ضخ الدم إلى
+                    جميع أنحاء الجسم</label>
+                <label class="option-label"><input type="radio" name="q1" class="option-input" value="c"> ج) تخزين
+                    الطاقة</label>
+                <label class="option-label"><input type="radio" name="q1" class="option-input" value="d"> د) تنقية
+                    الهواء</label>
+            </div>
+
+            <div class="question-text">
+                <h5 class="text-info">السؤال 2:</h5>
+                <p class="mb-3">كم عدد عظام الجمجمة في الإنسان البالغ؟</p>
+                <label class="option-label"><input type="radio" name="q2" class="option-input" value="a"> أ) 8
+                    عظام</label>
+                <label class="option-label"><input type="radio" name="q2" class="option-input" value="b"> ب) 22
+                    عظمة</label>
+                <label class="option-label"><input type="radio" name="q2" class="option-input" value="c"> ج) 14
+                    عظمة</label>
+                <label class="option-label"><input type="radio" name="q2" class="option-input" value="d"> د) 30
+                    عظمة</label>
+            </div>
+
+            <div class="question-text">
+                <h5 class="text-info">السؤال 3:</h5>
+                <p class="mb-3">أين يتم امتصاص معظم العناصر الغذائية؟</p>
+                <label class="option-label"><input type="radio" name="q3" class="option-input" value="a"> أ)
+                    المعدة</label>
+                <label class="option-label"><input type="radio" name="q3" class="option-input" value="b"> ب) الأمعاء
+                    الغليظة</label>
+                <label class="option-label"><input type="radio" name="q3" class="option-input" value="c"> ج) الأمعاء
+                    الدقيقة</label>
+                <label class="option-label"><input type="radio" name="q3" class="option-input" value="d"> د)
+                    المريء</label>
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                <button class="btn btn-info flex-grow-1 fw-bold rounded-pill py-2" id="submitQuizBtn">✅ تصحيح
+                    الإجابات</button>
+                <button class="btn btn-outline-secondary flex-grow-1 rounded-pill"
+                    onclick="window.location.href='lab.html'">🔙 العودة للمختبر</button>
+            </div>
+
+            <div id="quizResult" class="mt-4 p-3 rounded-3" style="background: #1e293b; display: none;">
+                <h5>النتيجة: <span id="scoreValue">0</span>/3</h5>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // قراءة اسم الجهاز من رابط الصفحة (اختياري)
+        const urlParams = new URLSearchParams(window.location.search);
+        const systemParam = urlParams.get('system');
+        const systemNames = {
+            skeletal: 'الهيكل العظمي',
+            muscular: 'العضلي',
+            circulatory: 'الدوري',
+            digestive: 'الهضمي',
+            nervous: 'العصبي'
+        };
+        if (systemParam && systemNames[systemParam]) {
+            document.getElementById('systemNameDisplay').innerText = systemNames[systemParam];
+        }
+
+        // تصحيح الإجابات
+        document.getElementById('submitQuizBtn').addEventListener('click', () => {
+            let score = 0;
+            let answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c'
+            };
+            let resultHtml = '';
+
+            // السؤال 1
+            let q1Selected = document.querySelector('input[name="q1"]:checked');
+            let q1Correct = (q1Selected && q1Selected.value === answers.q1);
+            if (q1Correct) score++;
+            resultHtml += `<div class="mb-2"><strong>السؤال 1:</strong> ${q1Correct ? '✓ صحيح' : '✗ خطأ'} (الإجابة الصحيحة: ب) ضخ الدم)</div>`;
+
+            // السؤال 2
+            let q2Selected = document.querySelector('input[name="q2"]:checked');
+            let q2Correct = (q2Selected && q2Selected.value === answers.q2);
+            if (q2Correct) score++;
+            resultHtml += `<div class="mb-2"><strong>السؤال 2:</strong> ${q2Correct ? '✓ صحيح' : '✗ خطأ'} (الإجابة الصحيحة: ب) 22 عظمة)</div>`;
+
+            // السؤال 3
+            let q3Selected = document.querySelector('input[name="q3"]:checked');
+            let q3Correct = (q3Selected && q3Selected.value === answers.q3);
+            if (q3Correct) score++;
+            resultHtml += `<div class="mb-2"><strong>السؤال 3:</strong> ${q3Correct ? '✓ صحيح' : '✗ خطأ'} (الإجابة الصحيحة: ج) الأمعاء الدقيقة)</div>`;
+
+            document.getElementById('scoreValue').innerText = score;
+            document.getElementById('resultDetails').innerHTML = resultHtml;
+            document.getElementById('quizResult').style.display = 'block';
+        });
+    </script>
+
+    <footer class="text-center text-secondary py-5 border-top mt-5">
+        <p>© 2026 ANATOMY ATLAS || SCIENCE TEAM</p>
+    </footer>
+</body>
+
+</html>

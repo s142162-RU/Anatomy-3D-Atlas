@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Interactive 3D Human Anatomy Atlas - Full Presentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050505;
+            overflow-x: hidden;
+        }
+
+        /* Each slide section */
+        .slide {
+            min-height: 100vh;
+            width: 100%;
+            background: #050505;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Inner container for content */
+        .slide-content {
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Navigation Arrow (Fixed) */
+        .nav-arrow {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            border: none;
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.1);
+            background: #fff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        .nav-arrow i {
+            color: #050505;
+            font-size: 24px;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 45px;
+            height: 45px;
+            background: #1e293b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border: 1px solid #00d4ff40;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #00d4ff;
+        }
+
+        .back-to-top i {
+            color: #00d4ff;
+            font-size: 20px;
+        }
+
+        .back-to-top:hover i {
+            color: #050505;
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid #00d4ff40;
+            color: #00d4ff;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 1000;
+            font-family: monospace;
+        }
+
+        /* Gradient backgrounds */
+        .gradient-overlay {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-card {
+            background-color: #111111;
+        }
+
+        .text-cyan {
+            color: #00d4ff;
+        }
+
+        .team-card {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #00d4ff20;
+            border: 1px solid #00d4ff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            background: #00d4ff;
+            color: black;
+        }
+
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tech-card {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tech-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .frontend-icon {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .backend-icon {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .storage-icon {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .integration-icon {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .feature-card {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .status-working {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem 1rem;
+            }
+
+            .team-card {
+                padding: 8px 12px;
+            }
+
+            .nav-arrow {
+                width: 45px;
+                height: 45px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+
+
+        .feature-card div,
+        .feature-card p,
+        .warning-box p,
+        .warning-box strong {
+            color: #e5e7eb;
+        }
+
+        .feature-card span.status-badge {
+            color: #22c55e;
+        }
+
+        .warning-box strong {
+            color: #b21010;
+        }
+
+
+        /* ===== SLIDE 6 - Live Demo Styles ===== */
+.demo-step {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.demo-step:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+}
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 212, 255, 0.2);
+    border: 2px solid #00d4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #00d4ff;
+    font-size: 14px;
+}
+.timeline-line {
+    position: absolute;
+    left: 16px;
+    top: 40px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, #00d4ff, rgba(0, 212, 255, 0.2));
+}
+.highlight-box {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+/* ===== SLIDE 7 & 8 - Additional Styles ===== */
+.feature-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.feature-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+}
+.status-pending {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+.status-planned {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+.warning-box {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+}
+.challenge-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.challenge-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.success-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+
+/* ===== SLIDE 9 - Current Roadblocks Styles ===== */
+.roadblock-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.roadblock-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+.status-badge.in-progress {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+.progress-bar {
+    height: 4px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: #00d4ff;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* ===== SLIDE 10 - Future Plans Styles ===== */
+.roadmap-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+.roadmap-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+.phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+}
+.short-term { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+.mid-term { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+.long-term { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+/* ===== SLIDE 11 - Lessons Learned Styles ===== */
+.lesson-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.lesson-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+.success-badge {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator" id="progressIndicator">Slide 1 / 5</div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop" onclick="goToSlide(0)">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Navigation Arrow (Next) -->
+    <div class="nav-arrow" id="nextArrow" onclick="nextSlide()">
+        <i class="fas fa-arrow-down"></i>
+    </div>
+
+    <!-- ==================== SLIDE 1 - TITLE ==================== -->
+    <section class="slide" id="slide0">
+        <div class="gradient-overlay"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none">
+        </div>
+
+        <div class="slide-content">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+                    Interactive <span class="text-cyan">3D Human Anatomy</span> Atlas
+                </h1>
+                <p class="text-gray-400 text-lg md:text-xl">A Comprehensive Learning Platform for Medical Education</p>
+            </div>
+
+            <div class="text-center my-12">
+                <a href="index.html" target="_blank" class="project-link text-lg px-6 py-3">
+                    <i class="fas fa-cube"></i> Launch Anatomy Atlas →
+                </a>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-6 mb-10">
+                <div class="team-card">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                class="fas fa-user text-cyan text-lg"></i></div>
+                        <div>
+                            <p class="text-white text-base font-medium">Ruqaia al-sawaii</p>
+                            <p class="text-gray-400 text-sm">Developer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                class="fas fa-user text-cyan text-lg"></i></div>
+                        <div>
+                            <p class="text-white text-base font-medium">shooq Al-sahi</p>
+                            <p class="text-gray-400 text-sm">Designer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                class="fas fa-user text-cyan text-lg"></i></div>
+                        <div>
+                            <p class="text-white text-base font-medium">aynas al hadi </p>
+                            <p class="text-gray-400 text-sm">Researcher</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm md:text-base text-gray-400">
+                <div class="flex items-center gap-3"><i class="fas fa-graduation-cap text-cyan"></i> Course: COMP3700</div>
+                <div class="flex items-center gap-3"><i class="fas fa-language text-cyan"></i> Bilingual: Arabic/English
+                </div>
+            </div>
+        </div>
+    </section>
+
+ <!-- ==================== SLIDE 2 - PROBLEM & PITCH ==================== -->
+<section class="slide" id="slide2">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <!-- Header -->
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">
+                    Problem &amp; <span class="text-cyan">Pitch</span>
+                </h1>
+                <p class="text-gray-400 text-sm">Understanding the need for interactive 3D anatomy education</p>
+            </div>
+            <div class="flex items-center gap-3 mt-2 md:mt-0">
+                <span class="text-cyan text-sm font-medium">Medical Education</span>
+                <i class="fas fa-graduation-cap text-cyan"></i>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid lg:grid-cols-2 gap-6">
+            <!-- Left Column: Pitch & Problems -->
+            <div class="flex flex-col gap-4">
+                <!-- One-sentence Pitch -->
+                <div class="bg-card border border-cyan/30 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center">
+                            <i class="fas fa-rocket text-cyan text-sm"></i>
+                        </div>
+                        <span class="text-white font-semibold">One-Sentence Pitch</span>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        A free, bilingual, web-based 3D anatomy atlas for interactive study and self-assessment, making medical education accessible to everyone.
+                    </p>
+                </div>
+
+                <!-- Problems -->
+                <div class="bg-card border border-gray-700 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-400 text-sm"></i>
+                        </div>
+                        <span class="text-white font-semibold">Key Problems</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3"><div class="w-2 h-2 rounded-full bg-red-400 mt-2"></div><div><p class="text-white text-sm font-medium">Expensive Software</p><p class="text-gray-400 text-xs">Professional 3D anatomy tools cost $100+ annually</p></div></div>
+                        <div class="flex items-start gap-3"><div class="w-2 h-2 rounded-full bg-red-400 mt-2"></div><div><p class="text-white text-sm font-medium">Static 2D Textbooks</p><p class="text-gray-400 text-xs">Traditional books lack interactive 3D visualization</p></div></div>
+                        <div class="flex items-start gap-3"><div class="w-2 h-2 rounded-full bg-red-400 mt-2"></div><div><p class="text-white text-sm font-medium">Language Barrier</p><p class="text-gray-400 text-xs">Most resources are English-only, limiting access</p></div></div>
+                        <div class="flex items-start gap-3"><div class="w-2 h-2 rounded-full bg-red-400 mt-2"></div><div><p class="text-white text-sm font-medium">Limited Progress Tracking</p><p class="text-gray-400 text-xs">No way to monitor learning progress or save notes</p></div></div>
+                    </div>
+                </div>
+
+                <!-- Solution -->
+                <div class="bg-cyan/10 border border-cyan/30 rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-2"><i class="fas fa-check-circle text-cyan"></i><span class="text-white font-semibold text-sm">Our Solution</span></div>
+                    <p class="text-gray-300 text-sm">Browser-based 3D viewer + Arabic/English content + progress tracking + personal notes</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Live Demo Button + Stats -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-gray-700 rounded-lg p-6 flex-1 flex flex-col">
+                    <div class="flex items-center gap-2 mb-4"><i class="fas fa-desktop text-cyan"></i><span class="text-white font-medium">3D Viewer Preview</span></div>
+                    <div class="bg-gray-800/50 border-2 border-dashed border-cyan/30 rounded-lg p-8 text-center flex-1 flex flex-col items-center justify-center">
+                        <i class="fas fa-cube text-cyan text-4xl mb-4"></i>
+                        <p class="text-gray-300 mb-3">Explore the interactive 3D skeletal system</p>
+                        <a href="skeletal.html" target="_blank" class="project-link"><i class="fas fa-bone"></i> Open Skeletal System →</a>
+                        <div class="flex gap-3 mt-6"><span class="px-3 py-1 bg-cyan/20 rounded text-cyan text-xs">Rotate</span><span class="px-3 py-1 bg-cyan/20 rounded text-cyan text-xs">Zoom</span><span class="px-3 py-1 bg-cyan/20 rounded text-cyan text-xs">Pan</span></div>
+                    </div>
+                </div>
+
+                <!-- Impact Stats -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-card border border-gray-700 rounded-lg p-4 text-center"><div class="text-3xl font-bold text-cyan mb-1">0</div><div class="text-gray-400 text-xs uppercase">Cost</div></div>
+                    <div class="bg-card border border-gray-700 rounded-lg p-4 text-center"><div class="text-3xl font-bold text-cyan mb-1">2</div><div class="text-gray-400 text-xs uppercase">Languages</div></div>
+                    <div class="bg-card border border-gray-700 rounded-lg p-4 text-center"><div class="text-3xl font-bold text-cyan mb-1">100%</div><div class="text-gray-400 text-xs uppercase">Accessible</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- ==================== SLIDE 3 - TARGET AUDIENCE & GOALS ==================== -->
+    <section class="slide" id="slide2">
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none">
+        </div>
+
+        <div class="slide-content">
+            <div class="flex flex-wrap justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Target Audience &amp; <span
+                            class="text-cyan">Goals</span></h1>
+                    <p class="text-gray-400 text-sm">Who benefits from our 3D anatomy atlas and what we aim to achieve</p>
+                </div>
+                <div class="flex items-center gap-3 mt-2 md:mt-0"><span
+                        class="text-cyan text-sm font-medium">User-Centered Design</span><i
+                        class="fas fa-users text-cyan"></i></div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-4">
+                    <div class="bg-card border border-gray-700 rounded-lg p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                    class="fas fa-users text-cyan text-sm"></i></div><span
+                                class="text-white font-semibold">Target Audience</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-800/50 border border-gray-600 rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="icon-circle bg-cyan/20"><i class="fas fa-user-md text-cyan text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white text-sm font-medium">Medical Students</p>
+                                        <p class="text-gray-400 text-xs">Primary users</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-xs">Need detailed 3D models for anatomy studies</p>
+                            </div>
+                            <div class="bg-gray-800/50 border border-gray-600 rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="icon-circle bg-green-500/20"><i
+                                            class="fas fa-graduation-cap text-green-400 text-lg"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-medium">High School Students</p>
+                                        <p class="text-gray-400 text-xs">Secondary users</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-xs">Accessible learning for biology classes</p>
+                            </div>
+                            <div class="bg-gray-800/50 border border-gray-600 rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="icon-circle bg-purple-500/20"><i
+                                            class="fas fa-chalkboard-teacher text-purple-400 text-lg"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-medium">Educators</p>
+                                        <p class="text-gray-400 text-xs">Teaching tool</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-xs">Interactive teaching aid for classrooms</p>
+                            </div>
+                            <div class="bg-gray-800/50 border border-gray-600 rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <div class="icon-circle bg-orange-500/20"><i
+                                            class="fas fa-book-reader text-orange-400 text-lg"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-medium">Self-Learners</p>
+                                        <p class="text-gray-400 text-xs">Independent study</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-300 text-xs">Self-paced anatomy exploration</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-cyan/10 border border-cyan/30 rounded-lg p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4"><i class="fas fa-language text-cyan text-2xl"></i>
+                                <div>
+                                    <p class="text-white font-semibold text-base">Bilingual Support</p>
+                                    <p class="text-gray-300 text-sm">Arabic &amp; English content</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2"><span
+                                    class="text-cyan text-base font-semibold">AR</span><span
+                                    class="text-gray-400">/</span><span
+                                    class="text-cyan text-base font-semibold">EN</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="bg-card border border-gray-700 rounded-lg p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center"><i
+                                    class="fas fa-bullseye text-green-400 text-base"></i></div><span
+                                class="text-white font-semibold text-lg">Project Goals</span>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-cube text-cyan text-sm"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-white text-base font-medium mb-1">3D Interactive Viewing</p>
+                                    <p class="text-gray-400 text-sm">Rotate, zoom, and pan 3D models for immersive
+                                        learning</p>
+                                </div>
+                                <div class="text-cyan text-lg flex-shrink-0 mt-1">✓</div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-language text-cyan text-sm"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-white text-base font-medium mb-1">Bilingual Content</p>
+                                    <p class="text-gray-400 text-sm">Arabic and English descriptions for all organs</p>
+                                </div>
+                                <div class="text-cyan text-lg flex-shrink-0 mt-1">✓</div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-chart-line text-cyan text-sm"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-white text-base font-medium mb-1">Progress Tracking</p>
+                                    <p class="text-gray-400 text-sm">Monitor learning progress across body systems</p>
+                                </div>
+                                <div class="text-cyan text-lg flex-shrink-0 mt-1">✓</div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-sticky-note text-cyan text-sm"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-white text-base font-medium mb-1">Personal Notes</p>
+                                    <p class="text-gray-400 text-sm">Save and organize study notes per organ</p>
+                                </div>
+                                <div class="text-cyan text-lg flex-shrink-0 mt-1">✓</div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-gift text-cyan text-sm"></i></div>
+                                <div class="flex-1">
+                                    <p class="text-white text-base font-medium mb-1">Free Access</p>
+                                    <p class="text-gray-400 text-sm">Open-source, no subscription required</p>
+                                </div>
+                                <div class="text-cyan text-lg flex-shrink-0 mt-1">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-card border border-gray-700 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-cyan mb-2">4</div>
+                            <div class="text-gray-400 text-sm">User Groups</div>
+                        </div>
+                        <div class="bg-card border border-gray-700 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-cyan mb-2">2</div>
+                            <div class="text-gray-400 text-sm">Languages</div>
+                        </div>
+                        <div class="bg-card border border-gray-700 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold text-cyan mb-2">5</div>
+                            <div class="text-gray-400 text-sm">Core Goals</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 4 - SYSTEM ARCHITECTURE ==================== -->
+    <section class="slide" id="slide3">
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="slide-content">
+            <div class="flex flex-wrap justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">System <span
+                            class="text-cyan">Architecture</span></h1>
+                    <p class="text-gray-400 text-sm">Technology stack and infrastructure overview</p>
+                </div>
+                <div class="flex items-center gap-3 mt-2 md:mt-0"><span class="text-cyan text-sm font-medium">Tech
+                        Stack</span><i class="fas fa-cogs text-cyan"></i></div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-4">
+                    <div class="bg-card border border-cyan/30 rounded-lg p-5">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                    class="fas fa-laptop-code text-cyan text-sm"></i></div><span
+                                class="text-white font-semibold">Frontend Technologies</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon frontend-icon"><i class="fab fa-html5"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">HTML5</p>
+                                    <p class="text-gray-400 text-xs">Structure &amp; Content</p>
+                                </div>
+                            </div>
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon frontend-icon"><i class="fab fa-css3-alt"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">CSS3</p>
+                                    <p class="text-gray-400 text-xs">Styling &amp; Layout</p>
+                                </div>
+                            </div>
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon frontend-icon"><i class="fab fa-js"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">JavaScript</p>
+                                    <p class="text-gray-400 text-xs">Interactivity</p>
+                                </div>
+                            </div>
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon frontend-icon"><i class="fab fa-bootstrap"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">Bootstrap 5</p>
+                                    <p class="text-gray-400 text-xs">UI Framework</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-card border border-cyan/30 rounded-lg p-5 flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                    class="fas fa-server text-cyan text-sm"></i></div><span
+                                class="text-white font-semibold">Backend Technologies</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon backend-icon"><i class="fab fa-php"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">PHP</p>
+                                    <p class="text-gray-400 text-xs">Server-side Logic</p>
+                                </div>
+                            </div>
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon backend-icon"><i class="fas fa-database"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">MySQL</p>
+                                    <p class="text-gray-400 text-xs">Database</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="bg-card border border-cyan/30 rounded-lg p-5">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                    class="fas fa-cube text-cyan text-sm"></i></div><span
+                                class="text-white font-semibold">3D Model Viewer</span>
+                        </div>
+                        <div class="tech-card p-4 flex items-center gap-3">
+                            <div class="tech-icon integration-icon"><i class="fas fa-eye"></i></div>
+                            <div>
+                                <p class="text-white text-sm font-medium">Google Model-Viewer</p>
+                                <p class="text-gray-400 text-xs">Web-based 3D model rendering with rotation, zoom, and
+                                    pan capabilities</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-card border border-cyan/30 rounded-lg p-5 flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i
+                                    class="fas fa-hdd text-cyan text-sm"></i></div><span
+                                class="text-white font-semibold">Storage &amp; Integration</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon storage-icon"><i class="fas fa-save"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">localStorage</p>
+                                    <p class="text-gray-400 text-xs">Client-side data persistence for notes and progress
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="tech-card p-3 flex items-center gap-3">
+                                <div class="tech-icon integration-icon"><i class="fas fa-plug"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-medium">REST API</p>
+                                    <p class="text-gray-400 text-xs">Future integration for AI/AR features</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SLIDE 5 - IMPLEMENTED FEATURES ==================== -->
+<section class="slide" id="slide4">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">What We <span class="text-cyan">Built</span></h1><p class="text-gray-400 text-sm">Current implementation status and working features</p></div>
+            <div class="flex items-center gap-3 mt-2 md:mt-0"><span class="text-cyan text-sm font-medium">Features Overview</span><i class="fas fa-check-circle text-cyan"></i></div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i class="fas fa-cube text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">Core Features</span></div><div class="space-y-3"><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-eye text-cyan text-sm"></i> 3D Model Viewer</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-list text-cyan text-sm"></i> Organ Selection (Text list)</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-language text-cyan text-sm"></i> Bilingual Support</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5 flex-1"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i class="fas fa-save text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">Data Persistence</span></div><div class="space-y-3"><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-sticky-note text-cyan text-sm"></i> Personal Notes</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-chart-line text-cyan text-sm"></i> Progress Tracking</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div></div></div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i class="fas fa-graduation-cap text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">Study Lab</span></div><div class="space-y-3"><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-search text-cyan text-sm"></i> Dictionary Search</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-calculator text-cyan text-sm"></i> BMI Calculator</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-chart-bar text-cyan text-sm"></i> Progress Cards</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5 flex-1"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i class="fas fa-gamepad text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">Educational Games</span></div><div class="grid grid-cols-2 gap-3"><div class="feature-card p-3 text-center"><p class="text-white text-sm">Memory Match</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-3 text-center"><p class="text-white text-sm">Sudoku 5x5</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-3 text-center"><p class="text-white text-sm">XO Game</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-3 text-center"><p class="text-white text-sm">Math Challenge</p><p class="text-green-400 text-xs">✓ Working</p></div></div></div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="warning-box"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center"><i class="fas fa-exclamation-triangle text-red-400 text-sm"></i></div><span class="text-white font-semibold text-sm">Important Note</span></div><p class="text-gray-300 text-sm"><strong>3D hotspots are NOT yet implemented.</strong> Users select organs from text list instead of clicking on the model.</p><div class="flex items-center gap-2 mt-3"><i class="fas fa-info-circle text-cyan"></i><span class="text-gray-400 text-sm">Planned for next iteration</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5 flex-1"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center"><i class="fas fa-user-check text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">User Features</span></div><div class="space-y-3"><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-sign-in-alt text-cyan text-sm"></i> Login/Signup</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div><div class="feature-card p-4 flex justify-between items-center"><div><i class="fas fa-bookmark text-cyan text-sm"></i> Progress Save</div><span class="status-badge status-working"><i class="fas fa-check"></i> Working</span></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 6 - LIVE DEMO (Website Tour) ==================== -->
+<section class="slide" id="slide5">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Live <span class="text-cyan">Demo</span></h1>
+                <p class="text-gray-400 text-sm">4-minute tour of the complete website features</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-cyan text-sm font-medium">Website Walkthrough</span>
+                <i class="fas fa-globe text-cyan"></i>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+            <!-- Left Column: Demo Steps -->
+            <div class="bg-card border border-cyan/30 rounded-lg p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-cyan/20 flex items-center justify-center">
+                        <i class="fas fa-list-ol text-cyan text-sm"></i>
+                    </div>
+                    <span class="text-white font-semibold">Demo Flow (4 min)</span>
+                </div>
+                <div class="relative pl-8">
+                    <div class="timeline-line"></div>
+                    <div class="space-y-3">
+                        <!-- Step 1: Home & Login -->
+                        <div class="demo-step p-3 relative">
+                            <div class="step-number absolute -left-8 top-2">1</div>
+                            <div>
+                                <p class="text-white text-sm font-medium mb-1">🏠 Home Page &amp; Login</p>
+                                <p class="text-gray-400 text-xs">Browse homepage, then navigate to login page</p>
+                                <div class="flex gap-3 mt-2">
+                                    <a href="index.html" target="_blank" class="text-cyan text-xs underline">Open Home</a>
+                                    <a href="login.html" target="_blank" class="text-cyan text-xs underline">Open Login</a>
+                                </div>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="text-xs text-cyan">0:00-0:45</span>
+                                    <span class="text-xs text-gray-500">45s</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-home text-cyan absolute right-3 top-3"></i>
+                        </div>
+
+                        <!-- Step 2: Sign Up & About -->
+                        <div class="demo-step p-3 relative">
+                            <div class="step-number absolute -left-8 top-2">2</div>
+                            <div>
+                                <p class="text-white text-sm font-medium mb-1">📝 Sign Up &amp; About Us</p>
+                                <p class="text-gray-400 text-xs">Create new account, learn about the team</p>
+                                <div class="flex gap-3 mt-2">
+                                    <a href="signin.html" target="_blank" class="text-cyan text-xs underline">Open Sign Up</a>
+                                    <a href="about.html" target="_blank" class="text-cyan text-xs underline">Open About</a>
+                                </div>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="text-xs text-cyan">0:45-1:30</span>
+                                    <span class="text-xs text-gray-500">45s</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-user-plus text-cyan absolute right-3 top-3"></i>
+                        </div>
+
+                        <!-- Step 3: Questionnaire -->
+                        <div class="demo-step p-3 relative">
+                            <div class="step-number absolute -left-8 top-2">3</div>
+                            <div>
+                                <p class="text-white text-sm font-medium mb-1">📊 User Questionnaire</p>
+                                <p class="text-gray-400 text-xs">Fill survey, submit feedback to database</p>
+                                <div class="flex gap-3 mt-2">
+                                    <a href="questionnaire.html" target="_blank" class="text-cyan text-xs underline">Open Questionnaire</a>
+                                </div>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="text-xs text-cyan">1:30-2:15</span>
+                                    <span class="text-xs text-gray-500">45s</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-clipboard-list text-cyan absolute right-3 top-3"></i>
+                        </div>
+
+                        <!-- Step 4: Contact & Games -->
+                        <div class="demo-step p-3 relative">
+                            <div class="step-number absolute -left-8 top-2">4</div>
+                            <div>
+                                <p class="text-white text-sm font-medium mb-1">📧 Contact &amp; Games</p>
+                                <p class="text-gray-400 text-xs">Contact form, then brain break with mini-games</p>
+                                <div class="flex gap-3 mt-2">
+                                    <a href="contact.html" target="_blank" class="text-cyan text-xs underline">Open Contact</a>
+                                    <a href="funpage.html" target="_blank" class="text-cyan text-xs underline">Open Games</a>
+                                </div>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="text-xs text-cyan">2:15-3:00</span>
+                                    <span class="text-xs text-gray-500">45s</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-envelope text-cyan absolute right-3 top-3"></i>
+                        </div>
+
+                        <!-- Step 5: Study Lab -->
+                        <div class="demo-step p-3 relative">
+                            <div class="step-number absolute -left-8 top-2">5</div>
+                            <div>
+                                <p class="text-white text-sm font-medium mb-1">📚 Study Lab Features</p>
+                                <p class="text-gray-400 text-xs">Dictionary, BMI calculator, progress tracking</p>
+                                <div class="flex gap-3 mt-2">
+                                    <a href="lab.html" target="_blank" class="text-cyan text-xs underline">Open Study Lab</a>
+                                </div>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="text-xs text-cyan">3:00-4:00</span>
+                                    <span class="text-xs text-gray-500">1min</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-flask text-cyan absolute right-3 top-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Access & Stats -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-5">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-rocket text-cyan"></i>
+                        <span class="text-white font-semibold">Quick Access to All Pages</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="index.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-home"></i> Home</a>
+                        <a href="login.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        <a href="signin.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-user-plus"></i> Sign Up</a>
+                        <a href="about.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-info-circle"></i> About</a>
+                        <a href="contact.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-envelope"></i> Contact</a>
+                        <a href="questionnaire.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-clipboard-list"></i> Survey</a>
+                        <a href="funpage.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-gamepad"></i> Games</a>
+                        <a href="lab.html" target="_blank" class="project-link justify-center text-sm"><i class="fas fa-flask"></i> Study Lab</a>
+                    </div>
+                </div>
+
+                <div class="highlight-box text-center">
+                    <div class="flex items-center gap-2 justify-center mb-3">
+                        <i class="fas fa-check-circle text-green-400"></i>
+                        <span class="text-white font-medium">All pages fully functional</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="flex items-center gap-2 justify-center"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-gray-300 text-xs">User Auth</span></div>
+                        <div class="flex items-center gap-2 justify-center"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-gray-300 text-xs">Survey DB</span></div>
+                        <div class="flex items-center gap-2 justify-center"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-gray-300 text-xs">Contact Form</span></div>
+                        <div class="flex items-center gap-2 justify-center"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-gray-300 text-xs">4 Games</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<!-- ==================== SLIDE 7 - MISSING FEATURES ==================== -->
+<section class="slide" id="slide6">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">What's <span class="text-cyan">Missing</span></h1><p class="text-gray-400 text-sm">Honest status of features not yet implemented</p></div>
+            <div class="flex items-center gap-3"><span class="text-cyan text-sm font-medium">Development Status</span><i class="fas fa-exclamation-circle text-cyan"></i></div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+            <!-- Core Missing Features -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-red-500/20"><i class="fas fa-times-circle text-red-400 text-sm"></i></div><span class="text-white font-semibold text-sm">Core Features Missing</span></div><div class="space-y-2"><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-mouse-pointer text-red-400"></i> Clickable 3D models</div><span class="status-badge status-pending">Missing</span></div><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-robot text-red-400"></i> AI Quiz Generator</div><span class="status-badge status-pending">Missing</span></div><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-file-pdf text-red-400"></i> anto-ai chatpot</div><span class="status-badge status-pending">Missing</span></div></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-4 flex-1"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-blue-500/20"><i class="fas fa-vr-cardboard text-blue-400 text-sm"></i></div><span class="text-white font-semibold text-sm">AR &amp; Voice</span></div><div class="space-y-2"><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-vr-cardboard text-blue-400"></i> AR View</div><span class="status-badge status-planned">Planned</span></div><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-volume-up text-blue-400"></i> Voice Pronunciation</div><span class="status-badge status-planned">Planned</span></div></div></div>
+            </div>
+
+            <!-- Gamification -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-purple-500/20"><i class="fas fa-trophy text-purple-400 text-sm"></i></div><span class="text-white font-semibold text-sm">Gamification</span></div><div class="space-y-2"><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-medal text-purple-400"></i> Badges System</div><span class="status-badge status-pending">Missing</span></div><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-chart-line text-purple-400"></i> Leaderboard</div><span class="status-badge status-pending">Missing</span></div><div class="feature-card p-3 flex justify-between items-center"><div><i class="fas fa-users text-purple-400"></i> Multiplayer</div><span class="status-badge status-planned">Planned</span></div></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-4 flex-1"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-green-500/20"><i class="fas fa-check-circle text-green-400 text-sm"></i></div><span class="text-white font-semibold text-sm">Working Features</span></div><div class="grid grid-cols-2 gap-2"><div class="feature-card p-2 text-center"><p class="text-white text-xs">3D Viewer</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-2 text-center"><p class="text-white text-xs">Progress</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-2 text-center"><p class="text-white text-xs">Notes</p><p class="text-green-400 text-xs">✓ Working</p></div><div class="feature-card p-2 text-center"><p class="text-white text-xs">Games</p><p class="text-green-400 text-xs">✓ Working</p></div></div></div>
+            </div>
+
+            <!-- Priority & Timeline -->
+            <div class="flex flex-col gap-4">
+                <div class="warning-box"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-red-500/20"><i class="fas fa-exclamation-triangle text-red-400 text-sm"></i></div><span class="text-white font-semibold text-sm">Priority</span></div><p class="text-gray-300 text-sm"><strong>Hotspots are the top priority.</strong> Currently using text list selection instead of clickable 3D model.</p><div class="flex items-center gap-2 mt-3"><i class="fas fa-info-circle text-cyan"></i><span class="text-gray-400 text-sm">Target: Next iteration</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-4 flex-1"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-cyan/20"><i class="fas fa-calendar-alt text-cyan text-sm"></i></div><span class="text-white font-semibold text-sm">Timeline</span></div><div class="space-y-3"><div class="feature-card p-3"><div class="flex justify-between mb-2"><span class="text-white text-sm">Short-term</span><span class="text-xs text-cyan">0-4 weeks</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div class="bg-cyan h-2 rounded-full" style="width: 25%"></div></div><p class="text-gray-400 text-xs mt-1">Hotspots, AI quiz MVP</p></div><div class="feature-card p-3"><div class="flex justify-between mb-2"><span class="text-white text-sm">Mid-term</span><span class="text-xs text-blue-400">1-3 months</span></div><div class="w-full bg-gray-700 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width: 15%"></div></div><p class="text-gray-400 text-xs mt-1">AR, Voice</p></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Challenge 1: LocalStorage Progress Sync -->
+<div class="challenge-card p-4">
+    <div class="flex items-center gap-3 mb-3">
+        <div class="icon-box bg-orange-500/20">
+            <i class="fas fa-database text-orange-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <div class="flex items-center justify-between">
+                <p class="text-white font-semibold text-sm">Progress Sync Across Pages</p>
+                <span class="success-badge"><i class="fas fa-check text-xs"></i> Resolved</span>
+            </div>
+            <p class="text-gray-400 text-xs mt-1">localStorage + device-common.js</p>
+        </div>
+    </div>
+    <div class="flex-1">
+        <p class="text-gray-300 text-xs mb-2">Keeping progress consistent across 5 separate HTML pages (Skeletal, Muscular, Circulatory, Digestive, Nervous) was a major challenge. We solved it by creating a shared JavaScript module that syncs studied organs and notes automatically.</p>
+        <div class="bg-gray-800/50 rounded-lg p-2.5 mb-2">
+            <div class="flex items-center gap-2 mb-1.5"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Shared device-common.js module</span></div>
+            <div class="flex items-center gap-2 mb-1.5"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Real-time progress bar updates</span></div>
+            <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Persistent notes across sessions</span></div>
+        </div>
+    </div>
+    <div class="mt-auto pt-2 border-t border-gray-700"><div class="flex justify-between text-xs"><span class="text-gray-400">Difficulty</span><span class="text-orange-400">High</span></div></div>
+</div>
+
+<!-- Challenge 2: Responsive RTL + LTR Layout -->
+<div class="challenge-card p-4">
+    <div class="flex items-center gap-3 mb-3">
+        <div class="icon-box bg-purple-500/20">
+            <i class="fas fa-arrow-right-arrow-left text-purple-400 text-xl"></i>
+        </div>
+        <div class="flex-1">
+            <div class="flex items-center justify-between">
+                <p class="text-white font-semibold text-sm">Responsive RTL + LTR Layout</p>
+                <span class="success-badge"><i class="fas fa-check text-xs"></i> Resolved</span>
+            </div>
+            <p class="text-gray-400 text-xs mt-1">Bidirectional CSS</p>
+        </div>
+    </div>
+    <div class="flex-1">
+        <p class="text-gray-300 text-xs mb-2">Designing a layout that works for both Arabic (RTL) and English (LTR) without breaking Bootstrap components was tricky. Text alignment, margins, and flex directions had to be carefully managed.</p>
+        <div class="bg-gray-800/50 rounded-lg p-2.5 mb-2">
+            <div class="flex items-center gap-2 mb-1.5"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Bootstrap RTL integration</span></div>
+            <div class="flex items-center gap-2 mb-1.5"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Custom CSS overrides for margins</span></div>
+            <div class="flex items-center gap-2"><i class="fas fa-check text-green-400 text-xs"></i><span class="text-gray-300 text-xs">Both languages fully supported</span></div>
+        </div>
+    </div>
+    <div class="mt-auto pt-2 border-t border-gray-700"><div class="flex justify-between text-xs"><span class="text-gray-400">Difficulty</span><span class="text-purple-400">Medium</span></div></div>
+</div>
+
+
+<!-- ==================== SLIDE 8.5 - BONUS FEATURES (Mini-Games & Admin Tools) ==================== -->
+<section class="slide" id="slide85">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-green-500 opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Bonus: <span class="text-cyan">Added Features</span> <span class="text-green-400 text-base ml-2">(Not in Original Plan)</span></h1>
+                <p class="text-gray-400 text-sm">Mini-games, Admin Panel &amp; Questionnaire System</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-green-400 text-xs font-medium">Added Value</span>
+                <i class="fas fa-plus-circle text-green-400"></i>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4">
+            <!-- Card 1: Mini-Games -->
+            <div class="bg-card border border-green-500/30 rounded-lg p-4 text-center">
+                <i class="fas fa-gamepad text-green-400 text-3xl mb-2"></i>
+                <h3 class="text-white font-semibold text-base">4 Educational Games</h3>
+                <p class="text-gray-400 text-xs mt-1">Memory Match • Sudoku • XO • Math Challenge</p>
+                <div class="mt-2"><span class="text-green-400 text-xs">✅ Cognitive Breaks</span></div>
+                <a href="funpage.html" target="_blank" class="project-link text-xs mt-3 inline-flex justify-center">Play Games →</a>
+            </div>
+
+            <!-- Card 2: User Management -->
+            <div class="bg-card border border-cyan/30 rounded-lg p-4 text-center">
+                <i class="fas fa-users-gear text-cyan text-3xl mb-2"></i>
+                <h3 class="text-white font-semibold text-base">User Management Panel</h3>
+                <p class="text-gray-400 text-xs mt-1">View, manage, and delete user accounts</p>
+                <div class="mt-2"><span class="text-green-400 text-xs">✅ Admin Interface</span></div>
+                <a href="manage_users.php" target="_blank" class="project-link text-xs mt-3 inline-flex justify-center">Manage Users →</a>
+            </div>
+
+            <!-- Card 3: Questionnaire System -->
+            <div class="bg-card border border-purple-500/30 rounded-lg p-4 text-center">
+                <i class="fas fa-clipboard-list text-purple-400 text-3xl mb-2"></i>
+                <h3 class="text-white font-semibold text-base">User Feedback System</h3>
+                <p class="text-gray-400 text-xs mt-1">Survey + database storage (PHP/MySQL)</p>
+                <div class="mt-2"><span class="text-green-400 text-xs">✅ Working</span></div>
+                <div class="flex gap-2 justify-center mt-3">
+                    <a href="questionnaire.html" target="_blank" class="project-link text-xs py-1 px-2">Take Survey</a>
+                    <a href="manage_users.php" target="_blank" class="project-link text-xs py-1 px-2">View Data</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Row -->
+        <div class="grid grid-cols-4 gap-3 mt-4">
+            <div class="bg-gray-800/50 rounded-lg p-2 text-center"><div class="text-xl font-bold text-cyan">4</div><div class="text-xs text-gray-500">Games</div></div>
+            <div class="bg-gray-800/50 rounded-lg p-2 text-center"><div class="text-xl font-bold text-green-400">PHP/MySQL</div><div class="text-xs text-gray-500">Backend</div></div>
+            <div class="bg-gray-800/50 rounded-lg p-2 text-center"><div class="text-xl font-bold text-purple-400">100%</div><div class="text-xs text-gray-500">Functional</div></div>
+            <div class="bg-gray-800/50 rounded-lg p-2 text-center"><div class="text-xl font-bold text-yellow-400">0$</div><div class="text-xs text-gray-500">Cost</div></div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<!-- ==================== SLIDE 9 - CURRENT ROADBLOCKS ==================== -->
+<section class="slide" id="slide8">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Current <span class="text-cyan">Roadblocks</span></h1><p class="text-gray-400 text-sm">Technical challenges and implementation hurdles we're currently facing</p></div>
+            <div class="flex items-center gap-3"><span class="text-cyan text-sm font-medium">5 Active Issues</span><i class="fas fa-exclamation-triangle text-cyan"></i></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Roadblock 1 -->
+            <div class="roadblock-card p-4"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-red-500/20"><i class="fas fa-bullseye text-red-400 text-xl"></i></div><div><p class="text-white font-semibold">3D Hotspots</p><p class="text-gray-400 text-xs">GLB Annotation Issue</p></div><div class="ml-auto"><span class="status-badge"><i class="fas fa-times"></i> Blocked</span></div></div><p class="text-gray-300 text-xs mb-3">Struggling with adding clickable hotspots directly on 3D models due to GLB file limitations.</p><div class="bg-gray-800/50 rounded-lg p-2 mb-2"><div class="flex items-center gap-2 mb-1"><i class="fas fa-circle text-red-400 text-[8px]"></i><span class="text-gray-400 text-xs">GLB model limitations</span></div><div class="flex items-center gap-2"><i class="fas fa-circle text-red-400 text-[8px]"></i><span class="text-gray-400 text-xs">Raycasting approach needed</span></div></div><div class="mt-2"><div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Progress</span><span class="text-red-400">30%</span></div><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div></div></div>
+
+            <!-- Roadblock 2 -->
+            <div class="roadblock-card p-4"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-orange-500/20"><i class="fas fa-robot text-orange-400 text-xl"></i></div><div><p class="text-white font-semibold">AI Quiz Generator</p><p class="text-gray-400 text-xs">API Integration</p></div><div class="ml-auto"><span class="status-badge in-progress"><i class="fas fa-clock"></i> In Progress</span></div></div><p class="text-gray-300 text-xs mb-3">Need to implement AI-powered quiz generation with proper API key management.</p><div class="bg-gray-800/50 rounded-lg p-2 mb-2"><div class="flex items-center gap-2 mb-1"><i class="fas fa-circle text-orange-400 text-[8px]"></i><span class="text-gray-400 text-xs">API key setup</span></div><div class="flex items-center gap-2"><i class="fas fa-circle text-orange-400 text-[8px]"></i><span class="text-gray-400 text-xs">Backend endpoints</span></div></div><div class="mt-2"><div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Progress</span><span class="text-orange-400">60%</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></div></div>
+
+            <!-- Roadblock 3 -->
+            <div class="roadblock-card p-4"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-blue-500/20"><i class="fas fa-file-pdf text-blue-400 text-xl"></i></div><div><p class="text-white font-semibold">PDF Export</p><p class="text-gray-400 text-xs">Library Selection</p></div><div class="ml-auto"><span class="status-badge in-progress"><i class="fas fa-clock"></i> In Progress</span></div></div><p class="text-gray-300 text-xs mb-3">Evaluating jsPDF vs PrintCSS for generating PDF reports of user progress.</p><div class="bg-gray-800/50 rounded-lg p-2 mb-2"><div class="flex items-center gap-2 mb-1"><i class="fas fa-circle text-blue-400 text-[8px]"></i><span class="text-gray-400 text-xs">Library comparison</span></div><div class="flex items-center gap-2"><i class="fas fa-circle text-blue-400 text-[8px]"></i><span class="text-gray-400 text-xs">Layout design</span></div></div><div class="mt-2"><div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Progress</span><span class="text-blue-400">45%</span></div><div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div></div></div>
+
+            <!-- Roadblock 4 -->
+            <div class="roadblock-card p-4"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-purple-500/20"><i class="fas fa-lock text-purple-400 text-xl"></i></div><div><p class="text-white font-semibold">Auth Backend</p><p class="text-gray-400 text-xs">PHP/MySQL Security</p></div><div class="ml-auto"><span class="status-badge"><i class="fas fa-times"></i> Blocked</span></div></div><p class="text-gray-300 text-xs mb-3">Finalizing PHP/MySQL sessions and security measures for user authentication.</p><div class="bg-gray-800/50 rounded-lg p-2 mb-2"><div class="flex items-center gap-2 mb-1"><i class="fas fa-circle text-purple-400 text-[8px]"></i><span class="text-gray-400 text-xs">Session management</span></div><div class="flex items-center gap-2"><i class="fas fa-circle text-purple-400 text-[8px]"></i><span class="text-gray-400 text-xs">Security hardening</span></div></div><div class="mt-2"><div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Progress</span><span class="text-purple-400">25%</span></div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div></div>
+
+            <!-- Roadblock 5 -->
+            <div class="roadblock-card p-4"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-yellow-500/20"><i class="fas fa-clock text-yellow-400 text-xl"></i></div><div><p class="text-white font-semibold">Time Management</p><p class="text-gray-400 text-xs">Scope vs Deadlines</p></div><div class="ml-auto"><span class="status-badge in-progress"><i class="fas fa-clock"></i> In Progress</span></div></div><p class="text-gray-300 text-xs mb-3">Balancing feature scope with semester deadlines and resource constraints.</p><div class="bg-gray-800/50 rounded-lg p-2 mb-2"><div class="flex items-center gap-2 mb-1"><i class="fas fa-circle text-yellow-400 text-[8px]"></i><span class="text-gray-400 text-xs">Feature prioritization</span></div><div class="flex items-center gap-2"><i class="fas fa-circle text-yellow-400 text-[8px]"></i><span class="text-gray-400 text-xs">Resource allocation</span></div></div><div class="mt-2"><div class="flex justify-between text-xs mb-1"><span class="text-gray-500">Progress</span><span class="text-yellow-400">70%</span></div><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></div></div>
+
+            <!-- Summary -->
+            <div class="roadblock-card p-4 bg-cyan/5"><div class="flex items-center gap-3 mb-3"><div class="icon-box bg-cyan/20"><i class="fas fa-chart-bar text-cyan text-xl"></i></div><div><p class="text-white font-semibold">Status Overview</p><p class="text-gray-400 text-xs">5 active issues</p></div></div><div class="grid grid-cols-2 gap-2 mb-3"><div class="bg-gray-800/50 rounded p-3 text-center"><div class="text-2xl font-bold text-red-400">2</div><div class="text-xs text-gray-400">Blocked</div></div><div class="bg-gray-800/50 rounded p-3 text-center"><div class="text-2xl font-bold text-orange-400">3</div><div class="text-xs text-gray-400">In Progress</div></div></div><div class="bg-yellow-500/10 border border-yellow-500/30 rounded p-2 text-center"><i class="fas fa-exclamation-circle text-yellow-400"></i> <span class="text-yellow-400 text-sm">Need attention</span></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 10 - FUTURE PLANS ==================== -->
+<section class="slide" id="slide9">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Future <span class="text-cyan">Plans</span></h1><p class="text-gray-400 text-sm">Roadmap for upcoming features and improvements</p></div>
+            <div class="flex items-center gap-3"><span class="text-cyan text-sm font-medium">Development Roadmap</span><i class="fas fa-road text-cyan"></i></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Short-term -->
+            <div class="flex flex-col gap-4"><div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-green-500/20"><i class="fas fa-rocket text-green-400 text-sm"></i></div><div><div class="flex items-center gap-2"><span class="text-white font-semibold text-sm">Short-term</span><span class="phase-badge short-term">0-4 weeks</span></div><p class="text-gray-400 text-xs">Immediate priorities</p></div></div><div class="space-y-3"><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-mouse-pointer text-cyan"></i><span class="text-white text-sm">Clickable 3D models</span></div><p class="text-gray-400 text-xs mt-1">3D model interaction with organ selection</p><div class="flex gap-2 mt-2"><span class="text-xs text-cyan">High priority</span><span class="text-xs text-gray-500">2 weeks</span></div></div><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-robot text-cyan"></i><span class="text-white text-sm">AI Quiz MVP</span></div><p class="text-gray-400 text-xs mt-1">Basic adaptive quiz system</p><div class="flex gap-2 mt-2"><span class="text-xs text-cyan">High priority</span><span class="text-xs text-gray-500">4 weeks</span></div></div></div></div><div class="bg-card border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-2 mb-2"><i class="fas fa-check text-green-400"></i><span class="text-white text-sm">Quick Wins</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">Bug fixes</span><span class="text-green-400">Done</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">UI improvements</span><span class="text-green-400">Done</span></div></div></div>
+
+            <!-- Mid-term -->
+            <div class="flex flex-col gap-4"><div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-blue-500/20"><i class="fas fa-calendar-alt text-blue-400 text-sm"></i></div><div><div class="flex items-center gap-2"><span class="text-white font-semibold text-sm">Mid-term</span><span class="phase-badge mid-term">1-3 months</span></div><p class="text-gray-400 text-xs">Feature expansion</p></div></div><div class="space-y-3"><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-vr-cardboard text-blue-400"></i><span class="text-white text-sm">AR WebXR</span></div><p class="text-gray-400 text-xs mt-1">Augmented reality view of anatomy</p><div class="flex gap-2 mt-2"><span class="text-xs text-blue-400">Medium priority</span><span class="text-xs text-gray-500">6 weeks</span></div></div><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-microphone text-blue-400"></i><span class="text-white text-sm">Voice Pronunciation</span></div><p class="text-gray-400 text-xs mt-1">Audio guides for anatomical terms</p><div class="flex gap-2 mt-2"><span class="text-xs text-blue-400">Medium priority</span><span class="text-xs text-gray-500">8 weeks</span></div></div><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-file-pdf text-blue-400"></i><span class="text-white text-sm">PDF Export</span></div><p class="text-gray-400 text-xs mt-1">Export notes and progress</p><div class="flex gap-2 mt-2"><span class="text-xs text-blue-400">Low priority</span><span class="text-xs text-gray-500">10 weeks</span></div></div></div></div><div class="bg-card border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-2 mb-2"><i class="fas fa-chart-line text-blue-400"></i><span class="text-white text-sm">Quality Improvements</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">Performance optimization</span><span class="text-blue-400">In progress</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">Accessibility</span><span class="text-blue-400">Planned</span></div></div></div>
+
+            <!-- Long-term -->
+            <div class="flex flex-col gap-4"><div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-purple-500/20"><i class="fas fa-rocket text-purple-400 text-sm"></i></div><div><div class="flex items-center gap-2"><span class="text-white font-semibold text-sm">Long-term</span><span class="phase-badge long-term">3-6 months</span></div><p class="text-gray-400 text-xs">Advanced features</p></div></div><div class="space-y-3"><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-mobile-alt text-purple-400"></i><span class="text-white text-sm">Mobile App</span></div><p class="text-gray-400 text-xs mt-1">iOS/Android native apps</p><div class="flex gap-2 mt-2"><span class="text-xs text-purple-400">High priority</span><span class="text-xs text-gray-500">12 weeks</span></div></div><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-users text-purple-400"></i><span class="text-white text-sm">Multiplayer</span></div><p class="text-gray-400 text-xs mt-1">Collaborative study sessions</p><div class="flex gap-2 mt-2"><span class="text-xs text-purple-400">Medium priority</span><span class="text-xs text-gray-500">16 weeks</span></div></div><div class="roadmap-card p-3"><div class="flex items-center gap-2"><i class="fas fa-trophy text-purple-400"></i><span class="text-white text-sm">Badges/Leaderboard</span></div><p class="text-gray-400 text-xs mt-1">Gamification features</p><div class="flex gap-2 mt-2"><span class="text-xs text-purple-400">Low priority</span><span class="text-xs text-gray-500">20 weeks</span></div></div></div></div><div class="bg-card border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-2 mb-2"><i class="fas fa-flask text-purple-400"></i><span class="text-white text-sm">Pilot Testing</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">Classroom pilot</span><span class="text-purple-400">Q3 2024</span></div><div class="flex justify-between text-xs"><span class="text-gray-400">Feedback collection</span><span class="text-purple-400">Q4 2024</span></div></div></div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== SLIDE 11 - LESSONS LEARNED ==================== -->
+<section class="slide" id="slide10">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Lessons <span class="text-cyan">Learned</span></h1><p class="text-gray-400 text-sm">Key takeaways from our development journey</p></div>
+            <div class="flex items-center gap-3"><span class="text-cyan text-sm font-medium">Development Insights</span><i class="fas fa-lightbulb text-cyan"></i></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-cyan/20"><i class="fas fa-rocket text-cyan"></i></div><div><span class="text-white font-semibold">Start Simple</span><span class="success-badge ml-2">Best Practice</span></div></div><p class="text-gray-300 text-sm"><strong>MVP first, iterate later.</strong> Focused on working prototype before complex features.</p><div class="flex items-center gap-2 mt-2"><i class="fas fa-check-circle text-green-400"></i><span class="text-gray-400 text-sm">Core 3D viewer working in 2 weeks</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-yellow-500/20"><i class="fas fa-vial text-yellow-400"></i></div><div><span class="text-white font-semibold">Test Early &amp; Often</span><span class="success-badge ml-2">Critical</span></div></div><p class="text-gray-300 text-sm"><strong>Test with real users early.</strong> Discovered UI/UX issues in first week.</p><div class="flex items-center gap-2 mt-2"><i class="fas fa-users text-cyan"></i><span class="text-gray-400 text-sm">5 user testing sessions</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-green-500/20"><i class="fas fa-list-check text-green-400"></i></div><div><span class="text-white font-semibold">Prioritize Core Features</span><span class="success-badge ml-2">Strategy</span></div></div><p class="text-gray-300 text-sm"><strong>Focus on essential features first.</strong> Deferred nice-to-have features.</p><div class="flex items-center gap-2 mt-2"><i class="fas fa-chart-line text-cyan"></i><span class="text-gray-400 text-sm">80/20 rule applied</span></div></div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-purple-500/20"><i class="fas fa-code-branch text-purple-400"></i></div><div><span class="text-white font-semibold">Version Control</span><span class="success-badge ml-2">Essential</span></div></div><p class="text-gray-300 text-sm"><strong>Use Git with branching strategy.</strong> Separate branches for features, fixes, releases.</p><div class="flex items-center gap-2 mt-2"><i class="fab fa-git-alt text-cyan"></i><span class="text-gray-400 text-sm">Feature branch workflow</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-blue-500/20"><i class="fas fa-sync-alt text-blue-400"></i></div><div><span class="text-white font-semibold">Iterate with Feedback</span><span class="success-badge ml-2">Process</span></div></div><p class="text-gray-300 text-sm"><strong>Track decisions and iterate.</strong> Documented feature requests and prioritized.</p><div class="flex items-center gap-2 mt-2"><i class="fas fa-comments text-cyan"></i><span class="text-gray-400 text-sm">Regular feedback loops</span></div></div>
+                <div class="bg-card border border-cyan/30 rounded-lg p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-pink-500/20"><i class="fas fa-users-cog text-pink-400"></i></div><div><span class="text-white font-semibold">Team Coordination</span><span class="success-badge ml-2">Collaboration</span></div></div><p class="text-gray-300 text-sm"><strong>Clear communication is key.</strong> Daily standups and task boards.</p><div class="flex items-center gap-2 mt-2"><i class="fas fa-tasks text-cyan"></i><span class="text-gray-400 text-sm">Agile methodology</span></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SLIDE 12 - Q&A ==================== -->
+<section class="slide" id="slide11">
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-900 to-black pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="slide-content max-w-4xl mx-auto text-center">
+        <div class="flex flex-wrap justify-between items-center mb-6">
+            <div><h1 class="text-3xl md:text-4xl font-bold text-white mb-1">Q&amp;A <span class="text-cyan">Session</span></h1><p class="text-gray-400 text-sm">Thank you for your attention - Questions &amp; Feedback Welcome</p></div>
+            <div class="flex items-center gap-3"><span class="text-cyan text-sm font-medium">Interactive 3D Atlas</span><i class="fas fa-comments text-cyan"></i></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-cyan/30 rounded-lg p-6"><div class="flex items-center gap-3 mb-3"><div class="w-8 h-8 rounded-full bg-cyan/20"><i class="fas fa-heart text-cyan"></i></div><span class="text-white font-semibold">Thank You!</span></div><p class="text-gray-300 text-sm">Thank you for taking the time to learn about our project. We appreciate your interest and welcome any questions or feedback.</p></div>
+                <div class="bg-card border border-gray-700 rounded-lg p-6"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 rounded-full bg-cyan/20"><i class="fas fa-envelope text-cyan"></i></div><span class="text-white font-semibold">project link </span></div><div class="space-y-2"><div class="flex items-center gap-2"></div><div class="flex items-center gap-2"><i class="fab fa-github text-cyan w-5"></i><span class="text-white text-sm">https://s142162-ru.github.io/Anatomy-3D-Atlas/</span></div></div></div>
+                <div class="bg-cyan/10 border border-cyan/30 rounded-lg p-4"><div class="flex items-center gap-2"><i class="fas fa-language text-cyan"></i><span class="text-white font-semibold text-sm">Bilingual Support</span></div><p class="text-gray-300 text-sm">Available in English &amp; Arabic (العربية)</p></div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="bg-card border border-gray-700 rounded-lg p-6"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-2"><i class="fas fa-qrcode text-cyan"></i><span class="text-white text-sm">Scan for Live Demo</span></div></div><div class="bg-gray-800/50 border-2 border-dashed border-cyan/30 rounded-lg p-6 text-center"><div class="bg-white p-3 rounded-lg inline-block"><div class="w-24 h-24 bg-gray-200 rounded flex items-center justify-center"><img src="qr-code.png" alt="qr-code" srcset="qr-code.png"></div></div><p class="text-gray-400 text-sm mt-3">scan the QR code</CODE></p><a href="index.html" target="_blank" class="project-link mt-3 inline-block"><i class="fas fa-cube"></i> Open Website →</a></div></div>
+                <div class="grid grid-cols-3 gap-4"><div class="bg-card border border-gray-700 rounded-lg p-3 text-center"><div class="text-2xl font-bold text-cyan">12</div><div class="text-gray-400 text-xs">Slides</div></div><div class="bg-card border border-gray-700 rounded-lg p-3 text-center"><div class="text-2xl font-bold text-cyan">3</div><div class="text-gray-400 text-xs">Team</div></div><div class="bg-card border border-gray-700 rounded-lg p-3 text-center"><div class="text-2xl font-bold text-cyan">4</div><div class="text-gray-400 text-xs">Games</div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+
+        function updateProgress() {
+            document.getElementById('progressIndicator').innerText = `Slide ${currentIndex + 1} of ${totalSlides}`;
+            const backBtn = document.getElementById('backToTop');
+            if (currentIndex > 0) backBtn.classList.add('visible');
+            else backBtn.classList.remove('visible');
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                currentIndex = index;
+                slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateProgress();
+            }
+        }
+
+        function nextSlide() {
+            if (currentIndex + 1 < totalSlides) {
+                currentIndex++;
+                slides[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateProgress();
+            }
+        }
+
+        function prevSlide() {
+            if (currentIndex - 1 >= 0) {
+                currentIndex--;
+                slides[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateProgress();
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const index = Array.from(slides).indexOf(entry.target);
+                    if (index !== -1) { currentIndex = index; updateProgress(); }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        slides.forEach(slide => observer.observe(slide));
+
+        setTimeout(() => {
+            slides.forEach(slide => {
+                const rect = slide.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100 && rect.bottom > 0) slide.classList.add('visible');
+            });
+            updateProgress();
+        }, 100);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
+            else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+
+</html>
